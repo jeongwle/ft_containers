@@ -10,4 +10,5 @@ int main(void){
     intVec.push_back(1);
     std::cout << intVec.capacity() << std::endl;
     std::cout << intVec.size() << std::endl;
+    std::vector<int>::iterator it;
 }
