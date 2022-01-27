@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <type_traits>
 
 int main(void){
     std::vector<int> intVec;
@@ -16,4 +17,5 @@ int main(void){
     it1 = intVec.begin() + 1;
     it2 = intVec.end() - 1;
     std::cout << it1[-1] << std::endl;
+    std::is_integral<int>
 }
