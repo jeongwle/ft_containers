@@ -14,9 +14,10 @@
 #define VECTOR_HPP
 #include <memory>
 #include "VectorIterator.hpp"
+#include "Utils.hpp"
 
 namespace ft {
-    template<class T, class Alloc = std::allocator<T> >
+    template <class T, class Alloc = std::allocator<T> >
     class vector {
     public :
         /* type def */
@@ -42,7 +43,8 @@ namespace ft {
             /* empty container constructor(default constructor) */
         }
         
-        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()){
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+        : _alloc(alloc), _capacity(n), _size(n), _storage(NULL) {
             /* fill constructor : Constructs a container witn n elements. Each element is a copy of val */
         }
 
