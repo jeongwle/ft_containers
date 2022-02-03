@@ -13,17 +13,18 @@
 #ifndef VECTORITERATOR_HPP
 #define VECTORITERATOR_HPP
 #include "Iterator.hpp"
+#include "Utils.hpp"
 
 namespace ft {
-    template <class T>
+    template <class T, bool Const>
     class VectorIterator {
     public :
         /* typedef */
-        typedef T                               value_type;
-        typedef T*                              pointer;
-        typedef T&                              reference;
-        typedef std::ptrdiff_t                  difference_type;
-        typedef ft::random_access_iterator_tag  iterator_category;
+        typedef T                                                           value_type;
+        typedef ft::isConst<value_type*, const value_type*, Const>::type    pointer;
+        typedef ft::isConst<value_type&, const value_type&, Const>::type    reference;
+        typedef std::ptrdiff_t                                              difference_type;
+        typedef ft::random_access_iterator_tag                              iterator_category;
 
     private :
         /* variables */
@@ -31,37 +32,37 @@ namespace ft {
 
     public :
         /* constructor, destructor, getter, setter */
-        VectorIterator() : _ptr(NULL) {
+        VectorIterator(void) : _ptr(NULL){
         }
 
         VectorIterator(pointer ptr) : _ptr(ptr){
 
         }
 
-        VectorIterator(const VectorIterator& copy){
+        VectorIterator(const VectorIterator<value_type, false>& copy){
             *(this) = copy;
         }
 
-        VectorIterator& operator=(const VectorIterator& object){
+        VectorIterator& operator=(const VectorIterator<value_type, false>& object){
             this->_ptr = object._ptr;
             return *(this);
         }
 
-        ~VectorIterator(){
+        ~VectorIterator(void){
 
         }
 
-        pointer get_Ptr(void){
+        pointer getPtr(void) const{
             return this->_ptr;
         }
 
-        void    set_Ptr(pointer _ptr){
+        void    setPtr(pointer _ptr){
             this->_ptr = _ptr;
         }
 
     public :
         /* Operator */
-        VectorIterator& operator++(){
+        VectorIterator& operator++(void){
             this->_ptr++;
             return (*this);
         }
@@ -72,7 +73,7 @@ namespace ft {
             return temp;
         }
 
-        VectorIterator& operator--(){
+        VectorIterator& operator--(void){
             this->_ptr--;
             return (*this);
         }
@@ -83,19 +84,27 @@ namespace ft {
             return temp;
         }
 
-        bool operator==(const VectorIterator& vIter) const{
+        bool operator==(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr == vIter._ptr);
         }
 
-        bool operator!=(const VectorIterator& vIter) const{
+        bool operator==(const VectorIterator<value_type, true>& vIter) const{
+            return (this->_ptr == vIter._ptr);
+        }
+
+        bool operator!=(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr != vIter._ptr);
         }
 
-        reference operator*() const{
+        bool operator!=(const VectorIterator<value_type, true>& vIter) const{
+            return (this->_ptr != vIter._ptr);
+        }
+
+        reference operator*(void) const{
             return *(this->_ptr);
         }
 
-        pointer operator->() const{
+        pointer operator->(void) const{
             return this->_ptr;
         }
 
@@ -109,23 +118,43 @@ namespace ft {
             return *(this);
         }
 
-        difference_type operator-(const VectorIterator& vIter){
+        difference_type operator-(const VectorIterator<value_type, false>& vIter){
             return (this->_ptr - vIter._ptr);
         }
 
-        bool operator<(const VectorIterator& vIter) const{
+        difference_type operator-(const VectorIterator<value_type, true>& vIter){
+            return (this->_ptr - vIter._ptr);
+        }
+
+        bool operator<(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr < vIter._ptr);
         }
 
-        bool operator>(const VectorIterator& vIter) const{
+        bool operator<(const VectorIterator<value_type, true>& vIter) const{
+            return (this->_ptr < vIter._ptr);
+        }
+
+        bool operator>(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr > vIter._ptr);
         }
 
-        bool operator<=(const VectorIterator& vIter) const{
+        bool operator>(const VectorIterator<value_type, true>& vIter) const{
+            return (this->_ptr > vIter._ptr);
+        }
+
+        bool operator<=(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr <= vIter._ptr);
         }
 
-        bool operator>=(const VectorIterator& vIter) const{
+        bool operator<=(const VectorIterator<value_type, true>& vIter) const{
+            return (this->_ptr <= vIter._ptr);
+        }
+
+        bool operator>=(const VectorIterator<value_type, false>& vIter) const{
+            return (this->_ptr >= vIter._ptr);
+        }
+
+        bool operator>=(const VectorIterator<value_type, true>& vIter) const{
             return (this->_ptr >= vIter._ptr);
         }
 
