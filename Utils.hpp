@@ -14,6 +14,7 @@
 #define UTILS_HPP
 
 namespace ft {
+    /* enable if */
     template <bool Cond, class T = void>
     class enable_if {
 
@@ -21,92 +22,124 @@ namespace ft {
 
     template <class T>
     class enable_if<true, T> {
+    public :
         typedef T type;
     };
 
+    /* is_integral */
     template <class T>
     class is_integral {
+    public :
         static const bool value = false;
     };
 
     template <>
     class is_integral<bool> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<char> {
+    public :
         static const bool value = true;
     };
     
     template <>
     class is_integral<signed char> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned char> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<wchar_t> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<char16_t> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<char32_t> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<short> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned short> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<int> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned int> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<long> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned long> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<long long> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned long long> {
+    public :
         static const bool value = true;
     };
 
     template <>
     class is_integral<unsigned int> {
+    public :
         static const bool value = true;
+    };
+
+    /* isConst */
+    template <class T, class ConstT, bool Const = false>
+    class isConst {
+    public :
+        typedef T type;
+    };
+
+    template <class T, class ConstT>
+    class isConst<T, ConstT, true> {
+    public :
+        typedef ConstT type;
     };
 }
 
