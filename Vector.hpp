@@ -13,6 +13,8 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 #include <memory>
+#include <iostream>
+#include <stdexcept>
 #include "VectorIterator.hpp"
 
 namespace ft {
@@ -48,6 +50,7 @@ namespace ft {
                 this->_capacity++;
             }
             else{
+                size_type capacityTemp = this->_capacity;
                 this->_capacity *= 2;
                 pointer temp = this->_alloc.allocate(this->_capacity);
                 for (size_type i = 0; i < this->_size; i++){
@@ -56,7 +59,7 @@ namespace ft {
                 for (size_type i = 0; i < this->_size; i++){
                     this->_alloc.destroy(this->_storage + i);
                 }
-                this->_alloc.deallocate(this->_storage, this->_size);
+                this->_alloc.deallocate(this->_storage, capacityTemp);
                 this->_storage = temp;
             }
         }
@@ -67,17 +70,15 @@ namespace ft {
                 this->_capacity = n;
                 return ;
             }
-            if (n > this->_capacity){
-              this->_capacity = n;
-            }
-            pointer temp = this->_alloc.allocate(this->_capacity);
+            pointer temp = this->_alloc.allocate(n);
             for (size_type i = 0; i < this->_size; i++){
                 this->_alloc.construct(temp + i, *(this->_storage + i));
             }
             for (size_type i = 0; i < this->_size; i++){
                 this->_alloc.destroy(this->_storage + i);
             }
-            this->_alloc.deallocate(this->_storage, this->_size);
+            this->_alloc.deallocate(this->_storage, this->_capacity);
+            this->_capacity = n;
             this->_storage = temp;
         }
 
@@ -147,13 +148,13 @@ namespace ft {
             return this->_alloc.max_size();
         }
 
-        /* 02.04(금)에 다시 생각해보기 지금 머리가 너무 안돌아감 */
         void resize(size_type n, value_type val = value_type()){
             if (n <= this->_size){
                 for (size_type i = n; i < this->_size; i++){
-                    this->_alloc.destroy(this->_storage + i);
+                    this->pop_back();
+                    // this->_alloc.destroy(this->_storage + i);
                 }
-                this->_size = n;
+                // this->_size = n;
             }
             else if (n <= this->_capacity){
                 for (; this->_size < n; this->_size++){
@@ -161,13 +162,13 @@ namespace ft {
                 }
             }
             else if (n <= this->_capacity * 2){
-                reallocate();
+                this->reallocate();
                 for (; this->_size < n; this->_size++){
                     this->_alloc.construct(this->_storage + this->_size, val);
                 }
             }
             else{
-                reallocate(n);
+                this->reallocate(n);
                 for (; this->_size < n; this->_size++){
                     this->_alloc.construct(this->_storage + this->_size, val);
                 }
@@ -180,6 +181,186 @@ namespace ft {
 
         bool empty(void){
             return (this->_size == 0);
+        }
+
+        void reserve(size_type n){
+            if (n > this->max_size()){
+                throw std::length_error("Length error.");
+            }
+            if (n > this->_capacity){
+                this->reallocate(n);
+            }
+        }
+
+        reference operator[](size_type n){
+            return *(this->_storage + n);
+        }
+
+        const_reference operator[](size_type n) const{
+            return *(this->_storage + n);
+        }
+
+        reference at(size_type n){
+            if (n >= this->_size){
+                throw std::out_of_range("Out of range.");
+            }
+            return *(this->_storage + n);
+        }
+
+        const_reference at(size_type n) const{
+            if (n >= this->_size){
+                throw std::out_of_range("Out of range.");
+            }
+            return *(this->_storage + n);
+        }
+
+        reference front(void){
+            return *(this->_storage);
+        }
+
+        const_reference front(void) const{
+            return *(this->_storage);
+        }
+
+        reference back(void){
+            return *(this->_storage + this->_size - 1);
+        }
+
+        const_reference back(void) const{
+            return *(this->_storage + this->_size - 1);
+        }
+
+        // template <class InputIterator>
+        // void assign(InputIterator first, InputIterator last){
+
+        // }
+
+        // void assign(size_type n, const value_type& val){
+
+        // }
+
+        void push_back(const value_type& val){
+            if (this->_size == this->_capacity){
+                this->reallocate();
+            }
+            this->_alloc.construct(this->_storage + this->_size, val);
+            this->_size++;
+        }
+
+        void pop_back(void){
+            this->_alloc.destroy(this->_storage + --this->_size);
+        }
+
+        /* 재점검 필요 */
+        iterator insert(iterator position, const value_type& val){
+            // if (this->_size == this->_capacity){
+            //     this->_capacity *= 2;
+            // }
+            size_type posTemp = 0;
+            for (const_iterator iter = this->begin(); iter != position; iter++){
+                posTemp++;
+            }
+            this->insert(position, 1, val);
+            // pointer temp = this->_alloc.allocate(this->_capacity);
+            // for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
+            //     this->_alloc.construct(temp + i), *(this->_storage + i);
+            // }
+            // this->_alloc.construct(temp + posTemp, val);
+            // for (size_type i = posTemp + 1; i < ++this->_size; i++){
+            //     this->_alloc.construct(temp + i, *(this->_storage + i - 1));
+            // }
+            // for (size_type i = 0; i < this->_size - 1; i++){
+            //     this->_alloc.destroy(this->_storage + i);
+            // }
+            // this->_alloc.deallocate(this->_storage, this->_size - 1);
+            // this->_storage = temp;
+            return iterator(this->_storage + posTemp);
+        }
+
+        void insert(iterator position, size_type n, const value_type& val){
+            size_type capacityTemp = this->_capacity;
+            if (this->_capacity < this->_size + n && this->_size + n <= this->_capacity * 2){
+                this->_capacity *= 2;
+            }
+            else if (this->_size + n > this->_capacity * 2){
+                this->_capacity = this->_size + n;
+            }
+            size_type posTemp = 0;
+            for (const_iterator iter = this->begin(); iter != position; iter++){
+                posTemp++;
+            }
+            pointer temp = this->_alloc.allocate(this->_capacity);
+            for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
+                this->_alloc.construct(temp + i), *(this->_storage + i);
+            }
+            for (size_type i = posTemp + n; i < this->size + n; i++){
+                this->_alloc.construct(temp + i, *(this->_storage + i - n - 1));
+            }
+            for (size_type i = 0; i < this->_size; i++){
+                this->_alloc.destroy(this->_storage + i);
+            }
+            this->_alloc.deallocate(this->_storage, capacityTemp);
+            this->_size += n;
+            for (size_type i = posTemp; n > 0; n--){
+                this->_alloc.construct(temp + i, val);
+            }
+            this->_storage = temp;
+        }
+
+        // template<class InputIterator>
+        // void insert(iterator position, InputIterator first, InputIterator last){
+
+        // }
+
+        iterator erase(iterator position){
+            size_type posTemp = 0;
+            /* remaining number = repeat */
+            difference_type repeat = this->end() - position.getPtr() - 1;
+            for (const_iterator iter = this->begin(); iter != position; iter++){
+                posTemp++;
+            }
+            this->_alloc.destroy(position.getPtr());
+            for (size_type i = posTemp; repeat > 0; i++){
+                *(this->_storage + i) = *(this->_storage + i + 1);
+                repeat--;
+            }
+            this->_size--;
+            return position;
+        }
+
+        /* 재점검 필요 */
+        iterator erase(iterator first, iterator last){
+            size_type posTemp = 0;
+            iterator iter = this->begin();
+            for (; iter != first; iter++){
+                posTemp++;
+            }
+            for (; iter != last; iter++){
+                this->_alloc.destroy(iter.getPtr());
+            }
+            for (difference_type i = last - first; i > 0; i--){
+                *(this->_storage + posTemp) = *(this->_storage + posTemp + (last - first));
+                posTemp++;
+            }
+            this->_size -= last - first;
+            /*뭔가 비효율적인거같음..*/
+            // difference_type numOfDestroy = last - first;
+            // for (; numOfDestroy > 0; numOfDestroy--){
+            //     this->erase(first);
+            // }
+            return first;
+        }
+
+        void swap(vector& x){
+
+        }
+
+        void clear(void){
+
+        }
+
+        allocator_type get_allocator(void) const{
+
         }
     };
 }
