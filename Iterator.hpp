@@ -60,6 +60,45 @@ namespace ft {
     private :
         /* nothing */
     };
+
+    /* reverse_iterator */
+    template <class Iterator>
+    class reverse_iterator{
+    public :
+        /* typedef */
+        typedef Iterator                                                    iterator_type;
+        typedef typename ft::iterator_traits<Iterator>::iterator_category   iterator_category;
+        typedef typename ft::iterator_traits<Iterator>::value_type          value_type;
+        typedef typename ft::iterator_traits<Iterator>::difference_type     difference_type;
+        typedef typename ft::iterator_traits<Iterator>::pointer             pointer;
+        typedef typename ft::iterator_traits<Iterator>::reference           reference;
+
+    private :
+        /* private variables */
+        iterator_type _input;
+
+    public :
+        /* Constructor */
+        reverse_iterator(void){
+
+        }
+
+        explicit reverse_iterator(iterator_type it){
+
+        }
+
+        template <class Iter>
+        reverse_iterator(const reverse_iterator<Iter>& rev_it){
+
+        }
+
+    public :
+        /* Member Function */
+        iterator_type base(void) const{
+            return this->_input;
+        }
+    };
+
 }
 
 #endif
