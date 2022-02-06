@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeongwle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 13:21:27 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/01/24 13:21:28 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/06 12:27:15 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,9 @@ namespace ft {
         }
         
         explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
-        : _alloc(alloc), _capacity(n), _size(n), _storage(NULL) {
+        : _alloc(alloc), _capacity(0), _size(0), _storage(NULL) {
             /* fill constructor : Constructs a container witn n elements. Each element is a copy of val */
+            this->assign(n, val);
         }
 
         template<class InputIterator>
@@ -341,7 +342,7 @@ namespace ft {
             for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
                 this->_alloc.construct(temp + i), *(this->_storage + i);
             }
-            for (size_type i = posTemp + num; i < this->size + n; i++){
+            for (size_type i = posTemp + num; i < this->size + num; i++){
                 this->_alloc.construct(temp + i, *(this->_storage + i - num));
             }
             for (size_type i = 0; i < this->_size; i++){

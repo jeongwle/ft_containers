@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VectorIterator.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeongwle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/26 11:34:44 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/04 15:36:23 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/06 12:26:51 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ namespace ft {
     class VectorIterator {
     public :
         /* typedef */
-        typedef T                                                           value_type;
-        typedef ft::isConst<value_type*, const value_type*, Const>::type    pointer;
-        typedef ft::isConst<value_type&, const value_type&, Const>::type    reference;
-        typedef std::ptrdiff_t                                              difference_type;
-        typedef ft::random_access_iterator_tag                              iterator_category;
+        typedef T                                                                   value_type;
+        typedef typename ft::isConst<value_type*, const value_type*, Const>::type   pointer;
+        typedef typename ft::isConst<value_type&, const value_type&, Const>::type   reference;
+        typedef std::ptrdiff_t                                                      difference_type;
+        typedef ft::random_access_iterator_tag                                      iterator_category;
 
     private :
         /* variables */
