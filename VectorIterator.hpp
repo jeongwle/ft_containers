@@ -44,7 +44,7 @@ namespace ft {
         }
 
         VectorIterator& operator=(const VectorIterator<value_type, false>& object){
-            this->_ptr = object._ptr;
+            this->_ptr = object.getPtr();
             return *(this);
         }
 
@@ -85,19 +85,19 @@ namespace ft {
         }
 
         bool operator==(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr == vIter._ptr);
+            return (this->_ptr == vIter.getPtr());
         }
 
         bool operator==(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr == vIter._ptr);
+            return (this->_ptr == vIter.getPtr());
         }
 
         bool operator!=(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr != vIter._ptr);
+            return (this->_ptr != vIter.getPtr());
         }
 
         bool operator!=(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr != vIter._ptr);
+            return (this->_ptr != vIter.getPtr());
         }
 
         reference operator*(void) const{
@@ -119,43 +119,43 @@ namespace ft {
         }
 
         difference_type operator-(const VectorIterator<value_type, false>& vIter){
-            return (this->_ptr - vIter._ptr);
+            return (this->_ptr - vIter.getPtr());
         }
 
         difference_type operator-(const VectorIterator<value_type, true>& vIter){
-            return (this->_ptr - vIter._ptr);
+            return (this->_ptr - vIter.getPtr());
         }
 
         bool operator<(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr < vIter._ptr);
+            return (this->_ptr < vIter.getPtr());
         }
 
         bool operator<(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr < vIter._ptr);
+            return (this->_ptr < vIter.getPtr());
         }
 
         bool operator>(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr > vIter._ptr);
+            return (this->_ptr > vIter.getPtr());
         }
 
         bool operator>(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr > vIter._ptr);
+            return (this->_ptr > vIter.getPtr());
         }
 
         bool operator<=(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr <= vIter._ptr);
+            return (this->_ptr <= vIter.getPtr());
         }
 
         bool operator<=(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr <= vIter._ptr);
+            return (this->_ptr <= vIter.getPtr());
         }
 
         bool operator>=(const VectorIterator<value_type, false>& vIter) const{
-            return (this->_ptr >= vIter._ptr);
+            return (this->_ptr >= vIter.getPtr());
         }
 
         bool operator>=(const VectorIterator<value_type, true>& vIter) const{
-            return (this->_ptr >= vIter._ptr);
+            return (this->_ptr >= vIter.getPtr());
         }
 
         VectorIterator& operator+=(const int& num){
