@@ -108,21 +108,19 @@ namespace ft {
             return this->_ptr;
         }
 
-        VectorIterator& operator+(const int& num){
-            this->_ptr = this->_ptr + num;
-            return *(this);
+        VectorIterator operator+(const int& num) const{
+            return VectorIterator(this->_ptr + num);
         }
 
-        VectorIterator& operator-(const int& num){
-            this->_ptr = this->_ptr - num;
-            return *(this);
+        VectorIterator operator-(const int& num) const{
+            return VectorIterator(this->_ptr - num);
         }
 
-        difference_type operator-(const VectorIterator<value_type, false>& vIter){
+        difference_type operator-(const VectorIterator<value_type, false>& vIter) const{
             return (this->_ptr - vIter.getPtr());
         }
 
-        difference_type operator-(const VectorIterator<value_type, true>& vIter){
+        difference_type operator-(const VectorIterator<value_type, true>& vIter) const{
             return (this->_ptr - vIter.getPtr());
         }
 
@@ -172,6 +170,12 @@ namespace ft {
             return *(this->_ptr + num);
         }
     };
+
+    template <class T, bool Const>
+    VectorIterator<T, Const> operator+(typename VectorIterator<T, Const>::difference_type n,
+    const VectorIterator<T, Const>& it) {
+        return VectorIterator<T, Const>(it + n);
+    }
 }
 
 #endif
