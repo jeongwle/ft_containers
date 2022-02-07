@@ -30,8 +30,8 @@ namespace ft {
         typedef typename allocator_type::const_pointer                      const_pointer;
         typedef VectorIterator<value_type, false>                           iterator;
         typedef VectorIterator<value_type, true>                            const_iterator;
-        // typedef                                             reverse_iterator;
-        // typedef                                             const_reverse_iterator;
+        typedef ft::reverse_iterator<iterator>                              reverse_iterator;
+        typedef ft::reverse_iterator<const_iterator>                        const_reverse_iterator;
         typedef typename ft::iterator_traits<iterator>::difference_type     difference_type;
         typedef size_t                                                      size_type;
 
@@ -54,7 +54,7 @@ namespace ft {
                 this->_capacity *= 2;
                 pointer temp = this->_alloc.allocate(this->_capacity);
                 for (size_type i = 0; i < this->_size; i++){
-                    this->_alloc.construct(temp + i, *(this->_storage + i));
+                    this->_alloc.construct(temp + i, value_type(*(this->_storage + i)));
                 }
                 for (size_type i = 0; i < this->_size; i++){
                     this->_alloc.destroy(this->_storage + i);
@@ -72,7 +72,7 @@ namespace ft {
             }
             pointer temp = this->_alloc.allocate(n);
             for (size_type i = 0; i < this->_size; i++){
-                this->_alloc.construct(temp + i, *(this->_storage + i));
+                this->_alloc.construct(temp + i, value_type(*(this->_storage + i)));
             }
             for (size_type i = 0; i < this->_size; i++){
                 this->_alloc.destroy(this->_storage + i);
@@ -95,20 +95,30 @@ namespace ft {
         }
 
         template<class InputIterator>
-        vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
+        vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+        typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) : _alloc(alloc), _capacity(0), _size(0), _storage(NULL){
             /* range constructor : Constructs a container with as many elements as the range(first, last) */
+            this->assign(first, last);
         }
 
-        vector(const vector& copy){
-
+        vector(const vector& copy) : _alloc(copy._alloc), _capacity(0), _size(0), _storage(NULL){
+            *(this) = copy;
         }
 
         ~vector(){
-
+            if (this->_capacity > 0){
+                this->clear();
+                this->_alloc.deallocate(this->_storage, this->_capacity);
+            }
         }
 
     public :
         /* Member Function */
+        vector& operator=(const vector& x){
+            this->assign(x.begin(), x.end());
+            return *(this);
+        }
+
         iterator begin(void){
             return iterator(this->_storage);
         }
@@ -125,21 +135,21 @@ namespace ft {
             return const_iterator(this->_storage + this->_size);
         }
 
-        // reverse_iterator rbegin(void){
+        reverse_iterator rbegin(void){
+            return reverse_iterator(this->_storage + this->_size);
+        }
 
-        // }
+        const_reverse_iterator rbegin(void) const{
+            return const_reverse_iterator(this->_storage + this->_size);
+        }
 
-        // const_reverse_iterator rbegin(void) const{
+        reverse_iterator rend(void){
+            return reverse_iterator(this->_storage);
+        }
 
-        // }
-
-        // reverse_iterator rend(void){
-
-        // }
-
-        // const_reverse_iterator rend(void){
-
-        // }
+        const_reverse_iterator rend(void) const{
+            return const_reverse_iterator(this->_storage);
+        }
 
         size_type size(void) const{
             return this->_size;
@@ -152,26 +162,25 @@ namespace ft {
         void resize(size_type n, value_type val = value_type()){
             if (n <= this->_size){
                 for (size_type i = n; i < this->_size; i++){
-                    this->pop_back();
-                    // this->_alloc.destroy(this->_storage + i);
+                    this->_alloc.destroy(this->_storage + i);
                 }
-                // this->_size = n;
+                this->_size = n;
             }
             else if (n <= this->_capacity){
                 for (; this->_size < n; this->_size++){
-                    this->_alloc.construct(this->_storage + this->_size, val);
+                    this->_alloc.construct(this->_storage + this->_size, value_type(val));
                 }
             }
             else if (n <= this->_capacity * 2){
                 this->reallocate();
                 for (; this->_size < n; this->_size++){
-                    this->_alloc.construct(this->_storage + this->_size, val);
+                    this->_alloc.construct(this->_storage + this->_size, value_type(val));
                 }
             }
             else{
                 this->reallocate(n);
                 for (; this->_size < n; this->_size++){
-                    this->_alloc.construct(this->_storage + this->_size, val);
+                    this->_alloc.construct(this->_storage + this->_size, value_type(val));
                 }
             }
         }
@@ -180,7 +189,7 @@ namespace ft {
             return this->_capacity;
         }
 
-        bool empty(void){
+        bool empty(void) const{
             return (this->_size == 0);
         }
 
@@ -234,15 +243,18 @@ namespace ft {
         template <class InputIterator>
         void assign(InputIterator first, InputIterator last,
         typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL){
-            for (const_iterator iter = this->begin(); iter != this->end(); iter++){
-                if (iter == first || iter == last){
-                    return ;
-                }
-            }
+            // for (const_iterator iter = this->begin(); iter != this->end(); iter++){
+            //     if (iter == first || iter == last){
+            //         return ;
+            //     }
+            // }
             this->clear();
-            difference_type checkSize = last - first - 1;
+            difference_type checkSize = 0;
+            for (InputIterator iter = first; iter != last; iter++){
+                checkSize++;
+            }
             this->reserve(checkSize);
-            for (const_iterator iter = first; iter != last; iter++){
+            for (InputIterator iter = first; iter != last; iter++){
                 this->push_back(*(iter));
             }
         }
@@ -259,7 +271,7 @@ namespace ft {
             if (this->_size == this->_capacity){
                 this->reallocate();
             }
-            this->_alloc.construct(this->_storage + this->_size, val);
+            this->_alloc.construct(this->_storage + this->_size, value_type(val));
             this->_size++;
         }
 
@@ -307,10 +319,10 @@ namespace ft {
             }
             pointer temp = this->_alloc.allocate(this->_capacity);
             for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
-                this->_alloc.construct(temp + i), *(this->_storage + i);
+                this->_alloc.construct(temp + i, value_type(*(this->_storage + i)));
             }
-            for (size_type i = posTemp + n; i < this->size + n; i++){
-                this->_alloc.construct(temp + i, *(this->_storage + i - n));
+            for (size_type i = posTemp + n; i < this->_size + n; i++){
+                this->_alloc.construct(temp + i, value_type(*(this->_storage + i - n)));
             }
             for (size_type i = 0; i < this->_size; i++){
                 this->_alloc.destroy(this->_storage + i);
@@ -318,7 +330,8 @@ namespace ft {
             this->_alloc.deallocate(this->_storage, capacityTemp);
             this->_size += n;
             for (size_type i = posTemp; n > 0; n--){
-                this->_alloc.construct(temp + i, val);
+                this->_alloc.construct(temp + i, value_type(val));
+                i++;
             }
             this->_storage = temp;
         }
@@ -327,7 +340,10 @@ namespace ft {
         void insert(iterator position, InputIterator first, InputIterator last,
         typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL){
             size_type capacityTemp = this->_capacity;
-            difference_type num = last - first - 1;
+            difference_type num = 0;
+            for (InputIterator iter = first; iter != last; iter++){
+                num++;
+            }
             if (this->_capacity < this->_size + num && this->_size + num <= this->_capacity * 2){
                 this->_capacity *= 2;
             }
@@ -340,18 +356,19 @@ namespace ft {
             }
             pointer temp = this->_alloc.allocate(this->_capacity);
             for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
-                this->_alloc.construct(temp + i), *(this->_storage + i);
+                this->_alloc.construct(temp + i, value_type(*(this->_storage + i)));
             }
-            for (size_type i = posTemp + num; i < this->size + num; i++){
-                this->_alloc.construct(temp + i, *(this->_storage + i - num));
+            for (size_type i = posTemp + num; i < this->_size + num; i++){
+                this->_alloc.construct(temp + i, value_type(*(this->_storage + i - num)));
             }
             for (size_type i = 0; i < this->_size; i++){
                 this->_alloc.destroy(this->_storage + i);
             }
             this->_alloc.deallocate(this->_storage, capacityTemp);
             this->_size += num;
-            for (InputIterator iter = first; first != last; iter++){
-                this->_alloc.construct(temp + posTemp++, *(iter));
+            for (InputIterator iter = first; iter != last; iter++){
+                this->_alloc.construct(temp + posTemp, value_type(*(iter)));
+                posTemp++;
             }
             this->_storage = temp;
         }
@@ -359,15 +376,19 @@ namespace ft {
         iterator erase(iterator position){
             size_type posTemp = 0;
             /* remaining number = repeat */
-            difference_type repeat = this->end() - position.getPtr() - 1;
+            // difference_type repeat = this->end().getPtr() - position.getPtr() - 1;
             for (const_iterator iter = this->begin(); iter != position; iter++){
                 posTemp++;
             }
             this->_alloc.destroy(position.getPtr());
-            for (size_type i = posTemp; repeat > 0; i++){
-                *(this->_storage + i) = *(this->_storage + i + 1);
-                repeat--;
+            for (const_iterator iter = position + 1; iter != this->end(); iter++){
+                *(this->_storage + posTemp) = *(iter);
+                posTemp++;
             }
+            // for (size_type i = posTemp; repeat > 0; i++){
+            //     *(this->_storage + i) = *(this->_storage + i + 1);
+            //     repeat--;
+            // }
             this->_size--;
             return position;
         }
@@ -382,11 +403,15 @@ namespace ft {
             for (; iter != last; iter++){
                 this->_alloc.destroy(iter.getPtr());
             }
-            for (difference_type i = last - first; i > 0; i--){
-                *(this->_storage + posTemp) = *(this->_storage + posTemp + (last - first));
+            for(; iter != this->end(); iter++){
+                *(this->_storage + posTemp) = *(iter);
                 posTemp++;
             }
-            this->_size -= last - first;
+            // for (difference_type i = this->end() - last; i > 0; i--){
+            //     *(this->_storage + posTemp) = *(this->_storage + posTemp + (last - first));
+            //     posTemp++;
+            // }
+            this->_size -= (last - first);
             /*뭔가 비효율적인거같음..*/
             // difference_type numOfDestroy = last - first;
             // for (; numOfDestroy > 0; numOfDestroy--){
