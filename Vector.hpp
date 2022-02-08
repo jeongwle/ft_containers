@@ -243,11 +243,6 @@ namespace ft {
         template <class InputIterator>
         void assign(InputIterator first, InputIterator last,
         typename ft::enable_if< !ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL){
-            // for (const_iterator iter = this->begin(); iter != this->end(); iter++){
-            //     if (iter == first || iter == last){
-            //         return ;
-            //     }
-            // }
             this->clear();
             difference_type checkSize = 0;
             for (InputIterator iter = first; iter != last; iter++){
@@ -281,27 +276,11 @@ namespace ft {
 
         /* 재점검 필요 */
         iterator insert(iterator position, const value_type& val){
-            // if (this->_size == this->_capacity){
-            //     this->_capacity *= 2;
-            // }
             size_type posTemp = 0;
             for (const_iterator iter = this->begin(); iter != position; iter++){
                 posTemp++;
             }
             this->insert(position, 1, val);
-            // pointer temp = this->_alloc.allocate(this->_capacity);
-            // for (size_type i = 0; this->_storage + i != position.getPtr(); i++){
-            //     this->_alloc.construct(temp + i), *(this->_storage + i);
-            // }
-            // this->_alloc.construct(temp + posTemp, val);
-            // for (size_type i = posTemp + 1; i < ++this->_size; i++){
-            //     this->_alloc.construct(temp + i, *(this->_storage + i - 1));
-            // }
-            // for (size_type i = 0; i < this->_size - 1; i++){
-            //     this->_alloc.destroy(this->_storage + i);
-            // }
-            // this->_alloc.deallocate(this->_storage, this->_size - 1);
-            // this->_storage = temp;
             return iterator(this->_storage + posTemp);
         }
 
@@ -375,8 +354,6 @@ namespace ft {
 
         iterator erase(iterator position){
             size_type posTemp = 0;
-            /* remaining number = repeat */
-            // difference_type repeat = this->end().getPtr() - position.getPtr() - 1;
             for (const_iterator iter = this->begin(); iter != position; iter++){
                 posTemp++;
             }
@@ -385,10 +362,6 @@ namespace ft {
                 *(this->_storage + posTemp) = *(iter);
                 posTemp++;
             }
-            // for (size_type i = posTemp; repeat > 0; i++){
-            //     *(this->_storage + i) = *(this->_storage + i + 1);
-            //     repeat--;
-            // }
             this->_size--;
             return position;
         }
@@ -407,16 +380,7 @@ namespace ft {
                 *(this->_storage + posTemp) = *(iter);
                 posTemp++;
             }
-            // for (difference_type i = this->end() - last; i > 0; i--){
-            //     *(this->_storage + posTemp) = *(this->_storage + posTemp + (last - first));
-            //     posTemp++;
-            // }
             this->_size -= (last - first);
-            /*뭔가 비효율적인거같음..*/
-            // difference_type numOfDestroy = last - first;
-            // for (; numOfDestroy > 0; numOfDestroy--){
-            //     this->erase(first);
-            // }
             return first;
         }
 
