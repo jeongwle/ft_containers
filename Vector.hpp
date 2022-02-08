@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 13:21:27 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/08 12:18:21 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/08 16:32:04 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ namespace ft {
 
         void reserve(size_type n){
             if (n > this->max_size()){
-                throw std::length_error("Length error.");
+                throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
             }
             if (n > this->_capacity){
                 this->reallocate(n);
@@ -212,14 +212,14 @@ namespace ft {
 
         reference at(size_type n){
             if (n >= this->_size){
-                throw std::out_of_range("Out of range.");
+                throw std::out_of_range("vector");
             }
             return *(this->_storage + n);
         }
 
         const_reference at(size_type n) const{
             if (n >= this->_size){
-                throw std::out_of_range("Out of range.");
+                throw std::out_of_range("vector");
             }
             return *(this->_storage + n);
         }
