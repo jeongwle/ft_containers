@@ -36,20 +36,17 @@ namespace ft {
         }
 
         VectorIterator(pointer ptr) : _ptr(ptr){
-
         }
 
-        VectorIterator(const VectorIterator<value_type, false>& copy){
-            *(this) = copy;
+        VectorIterator(const VectorIterator<value_type, false>& copy) : _ptr(copy.getPtr()){
         }
 
-        VectorIterator& operator=(const VectorIterator<value_type, false>& object){
+        VectorIterator& operator=(const VectorIterator& object){
             this->_ptr = object.getPtr();
             return *(this);
         }
 
         ~VectorIterator(void){
-
         }
 
         pointer getPtr(void) const{
