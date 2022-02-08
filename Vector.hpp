@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 13:21:27 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/08 10:44:44 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/08 12:18:21 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ namespace ft {
             *(this) = copy;
         }
 
-        ~vector(){
+        ~vector(void){
             if (this->_capacity > 0){
                 this->clear();
                 this->_alloc.deallocate(this->_storage, this->_capacity);
