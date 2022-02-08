@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Iterator.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeongwle <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/25 15:15:13 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/01/25 15:15:14 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/08 12:08:31 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ namespace ft {
         iterator_type _input;
 
     public :
-        /* Constructor */
+        /* Constructor, Destructor */
         reverse_iterator(void){
 
         }
@@ -92,8 +92,17 @@ namespace ft {
             this->_input = rev_it.base();
         }
 
+        ~reverse_iterator(void){
+
+        }
+
     public :
         /* Member Function */
+        reverse_iterator& operator=(const reverse_iterator& object){
+            this->_input = object.base();
+            return *(this);
+        }
+
         iterator_type base(void) const{
             return this->_input;
         }
