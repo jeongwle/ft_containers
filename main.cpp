@@ -1,9 +1,324 @@
-#include <vector>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <stack>
+#include <vector>
+#include "Stack.hpp"
 #include "Vector.hpp"
 
+/*
+ ** Stack Test Start
+ */
+
+template <class T>
+void PrintElement(std::stack<T> stdStack, std::ofstream& fout){
+    size_t stdSize = stdStack.size();
+    int stdTemp[stdSize];
+    int i = 1;
+    fout << " | element = ";
+    while (!stdStack.empty()){
+        stdTemp[stdSize - i] = stdStack.top();
+        i++;
+        stdStack.pop();
+    }
+    for(size_t i = 0; i < stdSize; i++){
+        fout << stdTemp[i] << " ";
+    }
+    fout << std::endl;
+}
+
+template <class T>
+void PrintElement(ft::stack<T> ftStack, std::ofstream& fout){
+    size_t ftSize = ftStack.size();
+    int ftTemp[ftSize];
+    int i = 1;
+    fout << " | element = ";
+    while (!ftStack.empty()){
+        ftTemp[ftSize - i] = ftStack.top();
+        i++;
+        ftStack.pop();
+    }
+    for(size_t i = 0; i < ftSize; i++){
+        fout << ftTemp[i] << " ";
+    }
+    fout << std::endl;
+}
+
+/* Print element like iterator */
+template <class T>
+void PrintStack(std::stack<T> stdStack, ft::stack<T> ftStack, std::ofstream& fout){
+    size_t stdSize = stdStack.size();
+    size_t ftSize = ftStack.size();
+    int stdTemp[stdSize];
+    int ftTemp[ftSize];
+    int i = 1;
+
+    fout << "| std stack | size = " << stdStack.size() << " | element = ";
+    while (!stdStack.empty()){
+        stdTemp[stdSize - i] = stdStack.top();
+        i++;
+        stdStack.pop();
+    }
+    for(size_t i = 0; i < stdSize; i++){
+        fout << stdTemp[i] << " ";
+    }
+    fout << std::endl;
+
+    i = 1;
+    fout << "|  ft stack | size = " << ftStack.size() << " | element = ";
+    while (!ftStack.empty()){
+        ftTemp[ftSize - i] = ftStack.top();
+        i++;
+        ftStack.pop();
+    }
+    for(size_t i = 0; i < ftSize; i++){
+        fout << ftTemp[i] << " ";
+    }
+    fout << std::endl;
+}
+
+void StackTest(void){
+    std::ofstream fout("StackTest.log");
+
+    std::stack<int> stdStack;
+    ft::stack<int> ftStack;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(50) << "Default Constructor" << std::setw(30) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintStack(stdStack, ftStack, fout);
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "empty case1" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStack.empty()){
+        fout << "true";
+    }
+    else {
+        fout << "false";
+    }
+    fout << std::endl;
+    fout << "|  ft stack | result = ";
+    if (ftStack.empty()){
+        fout << "true";
+    }
+    else {
+        fout << "false";
+    }
+    fout << std::endl;
+
+    stdStack.push(1);
+    ftStack.push(1);
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "empty case2" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStack.empty()){
+        fout << "true";
+    }
+    else {
+        fout << "false";
+    }
+    fout << std::endl;
+    fout << "|  ft stack | result = ";
+    if (ftStack.empty()){
+        fout << "true";
+    }
+    else {
+        fout << "false";
+    }
+    fout << std::endl;
+
+    for(int i = 3; i < 10; i++){
+        if (i % 2 == 1){
+            stdStack.push(i);
+            ftStack.push(i);
+        }
+    }
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(45) << "top case1" << std::setw(35) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | top element = " << stdStack.top() << " | size = " << stdStack.size();
+    PrintElement(stdStack, fout);
+    fout << "|  ft stack | top element = " << ftStack.top() << " | size = " << ftStack.size();
+    PrintElement(ftStack, fout);
+
+    stdStack.top() += 2;
+    ftStack.top() += 2;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(45) << "top case2" << std::setw(35) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | top element = " << stdStack.top() << " | size = " << stdStack.size();
+    PrintElement(stdStack, fout);
+    fout << "|  ft stack | top element = " << ftStack.top() << " | size = " << ftStack.size();
+    PrintElement(ftStack, fout);
+
+    stdStack.pop();
+    ftStack.pop();
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(45) << "top case3" << std::setw(35) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | top element = " << stdStack.top() << " | size = " << stdStack.size();
+    PrintElement(stdStack, fout);
+    fout << "|  ft stack | top element = " << ftStack.top() << " | size = " << ftStack.size();
+    PrintElement(ftStack, fout);
+
+    stdStack.push(9);
+    ftStack.push(9);
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(42) << "push" << std::setw(38) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintStack(stdStack, ftStack, fout);
+
+    stdStack.push(11);
+    ftStack.push(11);
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(42) << "push" << std::setw(38) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintStack(stdStack, ftStack, fout);
+
+    stdStack.pop();
+    ftStack.pop();
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(42) << "pop" << std::setw(38) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintStack(stdStack, ftStack, fout);
+
+    stdStack.pop();
+    ftStack.pop();
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(42) << "pop" << std::setw(38) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintStack(stdStack, ftStack, fout);
+
+
+    std::stack<int> stdStackNonmember1;
+    std::stack<int> stdStackNonmember2;
+    ft::stack<int> ftStackNonmember1;
+    ft::stack<int> ftStackNonmember2;
+    for (int i = 1; i < 6; i++){
+        stdStackNonmember1.push(i);
+        stdStackNonmember2.push(i);
+        ftStackNonmember1.push(i);
+        ftStackNonmember2.push(i);
+    }
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator ==" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 == stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 == ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator !=" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 != stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 != ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+
+    stdStackNonmember2.push(6);
+    ftStackNonmember2.push(6);
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator <" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 < stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 < ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator >" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 > stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 > ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator <=" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 <= stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 <= ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << "Operator >=" << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std stack | result = ";
+    if (stdStackNonmember1 >= stdStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "|  ft stack | result = ";
+    if (ftStackNonmember1 >= ftStackNonmember2){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout.close();
+}
+
+/*
+** Stack Test End
+*/
 
 /*
 ** Vector Test Start 
@@ -77,11 +392,15 @@ void VectorTest(void){
 
     std::vector<int> stdVecCopy(stdVecRange);
     ft::vector<int> ftVecCopy(ftVecRange);
-    stdVecCopy.push_back(7);
-    ftVecCopy.push_back(7);
     fout << "--------------------------------------------------------------------------------" << std::endl;
     fout << "|" << std::setw(46) << "Copy Constructor" << std::setw(34) << "|" << std::endl;
     fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintVector(stdVecCopy, ftVecCopy, fout);
+    stdVecCopy.push_back(7);
+    ftVecCopy.push_back(7);
+    fout << "|" << std::setw(38) << "Origin" << std::setw(42) << "|" << std::endl;
+    PrintVector(stdVecRange, ftVecRange, fout);
+    fout << "|" << std::setw(39) << "after =" << std::setw(41) << "|" << std::endl;
     PrintVector(stdVecCopy, ftVecCopy, fout);
 
     std::vector<int> stdVecOper;
@@ -92,6 +411,13 @@ void VectorTest(void){
     fout << "|" << std::setw(42) << "Operator =" << std::setw(38) << "|" << std::endl;
     fout << "--------------------------------------------------------------------------------" << std::endl;
     PrintVector(stdVecOper, ftVecOper, fout);
+    stdVecOper.push_back(9);
+    ftVecOper.push_back(9);
+    fout << "|" << std::setw(38) << "Origin" << std::setw(42) << "|" << std::endl;
+    PrintVector(stdVecCopy, ftVecCopy, fout);
+    fout << "|" << std::setw(39) << "after =" << std::setw(41) << "|" << std::endl;
+    PrintVector(stdVecOper, ftVecOper, fout);
+
 
     fout << "--------------------------------------------------------------------------------" << std::endl;
     fout << "|" << std::setw(50) << "begin, end, rbegin, rend" << std::setw(30) << "|" << std::endl;
@@ -651,6 +977,7 @@ void VectorTest(void){
     fout << std::endl;
     fout << "--------------------------------------------------------------------------------" << std::endl;
     fout.close();
+
 }
 /*
 ** Vector Test End
@@ -658,5 +985,7 @@ void VectorTest(void){
 
 int main(void){
     VectorTest();
+    StackTest();
+    system("leaks a.out");
     return (0);
 }
