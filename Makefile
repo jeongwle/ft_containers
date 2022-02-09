@@ -6,7 +6,7 @@
 #    By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/09 10:08:23 by jeongwle          #+#    #+#              #
-#    Updated: 2022/02/09 10:13:25 by jeongwle         ###   ########.fr        #
+#    Updated: 2022/02/09 18:53:09 by jeongwle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ fclean : clean
 clean :
 	$(RM) $(OBJS)
 	$(RM) VectorTest.log
+	$(RM) StackTest.log
 
 re : fclean all
 
