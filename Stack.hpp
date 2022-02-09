@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/08 10:45:50 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/08 12:17:16 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/09 11:47:51 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "Vector.hpp"
 
 namespace ft {
-    template <class T, class Container = ft::vector<T>>
+    template <class T, class Container = ft::vector<T> >
     class stack {
     public :
         /* typedef */
@@ -29,12 +29,12 @@ namespace ft {
 
     private :
         /* friend */
-        template<class T, class Container>
-        friend bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs);
-        template<class T, class Container>
-        friend bool operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs);
-        template<class T, class Container>
-        friend bool operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs);
+        template<class _T, class _Container>
+        friend bool operator==(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs);
+        template<class _T, class _Container>
+        friend bool operator>(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs);
+        template<class _T, class _Container>
+        friend bool operator<(const stack<_T, _Container>& lhs, const stack<_T, _Container>& rhs);
 
     public :
         /* Constructor, Destructor */
