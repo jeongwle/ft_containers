@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/24 13:21:27 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/08 16:32:04 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/10 12:43:45 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,6 @@ namespace ft {
             this->_alloc.destroy(this->_storage + --this->_size);
         }
 
-        /* 재점검 필요 */
         iterator insert(iterator position, const value_type& val){
             size_type posTemp = 0;
             for (const_iterator iter = this->begin(); iter != position; iter++){
@@ -366,7 +365,6 @@ namespace ft {
             return position;
         }
 
-        /* 재점검 필요 */
         iterator erase(iterator first, iterator last){
             size_type posTemp = 0;
             iterator iter = this->begin();
