@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/10 17:05:46 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/11 14:03:22 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,30 +65,136 @@ namespace ft {
         node_pointer _root;
         node_pointer _NIL;
 
-    public :
+    private :
         /* from wikipedia */
-        node_pointer grandparent(node_pointer node){
+        node_pointer findGrandParent(node_pointer node){
             if (node != NULL && node->_parent != NULL){
-                return this->_parent->_parent;
+                return node->_parent->_parent;
             }
             return NULL;
         }
 
-        node_pointer uncle(node_pointer node){
-            Node* grandparent = grandparent(node);
+        node_pointer findUncle(node_pointer node){
+            Node* grandparent = findGrandParent(node);
             if (grandparent == NULL){
                 return NULL;
             }
-            if (node->_parent == grandparent->left){
-                return grandparent->right;
+            if (node->_parent == grandparent->_left){
+                return grandparent->_right;
             }
             else{
-                return grandparent->left;
+                return grandparent->_left;
+            }
+        }
+
+        node_pointer findSibling(node_pointer node){
+            if (node->_parent == NULL){
+                return NULL;
+            }
+            if (node == node->_parent->_left){
+                return node->_parent->_right;
+            }
+            else{
+                return node->_parent->_left;
+            }
+        }
+
+        void rotate_left(node_pointer node){
+            node_pointer child = node->_right;
+            node_pointer parent = node->_parent;
+            if (child->_left != this->_NIL){
+                child->_left->_parent = node;
+            }
+            node->_right = child->_left;
+            node->_parent = child;
+            child->_parent = parent;
+            child->_left = node;
+            if (parent != NULL){
+                if (parent->_left == node){
+                    parent->_left = child;
+                }
+                else{
+                    parent->_right = child;
+                }
+            }
+        }
+
+        void rotate_right(node_pointer node){
+            node_pointer child = node->_left;
+            node_pointer parent = node->_parent;
+            if (child->_right != this->_NIL){
+                child->_right->_parent = node;
+            }
+            node->_left = child->_right;
+            node->_parent = child;
+            child->_parent = parent;
+            child->_right = node;
+            if (parent != NULL){
+                if (parent->_right == node){
+                    parent->_right = child;
+                }
+                else{
+                    parent->_left = child;
+                }
             }
         }
 
         void insert_case1(node_pointer node){
+            if (node->_parent == NULL){
+                node->_color = BLACK;
+            }
+            else{
+                this->insert_case2(node);
+            }
+        }
 
+        void insert_case2(node_pointer node){
+            if (node->_parent->_color == BLACK){
+                return ;
+            }
+            else {
+                this->insert_case3(node);
+            }
+        }
+
+        void insert_case3(node_pointer node){
+            node_pointer uncle = findUncle(node);
+            node_pointer grandparent;
+            if ((uncle != this->_NIL) && uncle->_color == RED){
+                node->_parent->_color = BLACK;
+                uncle->_color = BLACK;
+                grandparent = findGrandParent(node);
+                grandparent->_color = RED;
+                this->insert_case1(grandparent);
+            }
+            else{
+                this->insert_case4(node);
+            }
+        }
+
+        void insert_case4(node_pointer node){
+            node_pointer grandparent = findGrandParent(node);
+            if ((node == node->_parent->_right) && (node->_parent == grandparent->_left)){
+                this->rotate_left(node->_parent);
+                node = node->_left;
+            }
+            else if ((node == node->_parent->left) && (node->_parent == grandparent->_right)){
+                this->rotate_right(node->_parent);
+                node = node->_right;
+            }
+            this->insert_case5(node);
+        }
+
+        void insert_case5(node_pointer node){
+            node_pointer grandparnet = findGrandParent(node);
+            node->_parent->_color = BLACK;
+            grandparnet->_color = RED;
+            if (node == node->_parent->left){
+                this->rotate_right(grandparnet);
+            }
+            else{
+                this->rotate_left(grandparnet);
+            }
         }
     };
 
