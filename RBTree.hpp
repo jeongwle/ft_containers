@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/11 14:03:22 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/13 18:34:42 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ namespace ft {
         /* private variables */
         node_pointer _root;
         node_pointer _NIL;
+        Compare _compare;
 
     private :
         /* from wikipedia */
@@ -186,18 +187,162 @@ namespace ft {
         }
 
         void insert_case5(node_pointer node){
-            node_pointer grandparnet = findGrandParent(node);
+            node_pointer grandparent = findGrandParent(node);
             node->_parent->_color = BLACK;
-            grandparnet->_color = RED;
+            grandparent->_color = RED;
             if (node == node->_parent->left){
-                this->rotate_right(grandparnet);
+                this->rotate_right(grandparent);
             }
             else{
-                this->rotate_left(grandparnet);
+                this->rotate_left(grandparent);
             }
         }
-    };
 
+        bool isLastElement(node_pointer node){
+            return (node->_left == this->_NIL && node->_right == this->_NIL);
+        }
+
+        node_pointer findNode(const value_type& val){
+            node_pointer curr = this->_root;
+            if (curr == NULL){
+                return NULL;
+            }
+            while (curr != this->_NIL){
+                if (!_compare(val, curr->_value && !_compare(curr->_value, val))){
+                    return curr;
+                }
+                if (_compare(val, curr->_value)){
+                    curr = curr->_left;
+                }
+                else{
+                    curr = curr->_right;
+                }
+            }
+            return NULL;
+        }
+        
+        node_pointer findMaxInLeft(node_pointer node){
+            node_pointer curr = node;
+            if (curr->_left == this->_NIL){
+                return NULL;
+            }
+            curr = curr->_left;
+            while (curr->_right != this->_NIL){
+                curr = curr->_right;
+            }
+            return curr;
+        }
+
+        void reOrderAfterErase(node_pointer node){
+            node_pointer sibling;
+            while (node != this->_root && node->_color == BLACK){
+                sibling = this->findSibling(node);
+                if (node == node->_parent->_left){
+                    /* sibling이 red인 경우 */
+                    if (sibling->_color == RED){
+                        sibling->_color = BLACK;
+                        node->_parent->_color = RED;
+                        this->rotate_left(node->_parent);
+                        sibling = this->findSibling(node);
+                    }
+                    /* case 2-A */
+                    if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
+                        siblig->_color = RED;
+                        node->_parent->_color = BLACK;
+                        node = node->_parent;
+                    }
+                    else{
+                        /* case 2-B */
+                        if (sibling->_right->_color == BLACK){
+                            sibling->_left->_color = BLACK;
+                            sibling->_color = RED;
+                            this->rotate_right(sibling);
+                            sibling = this->findSibling(node);
+                        }
+                        /* case 2-C */
+                        sibling->_color = node->_parent->_color;
+                        node->_parent->_color = BLACK;
+                        sibling->_right->_color = BLACK;
+                        this->rotate_left(node->_parent);
+                        break ;
+                    }
+                }
+                else{
+                    /* sibling이 red인 경우 */
+                    if (sibling->_color == RED){
+                        sibling->_color = BLACK;
+                        node->_parent->_color = RED;
+                        this->rotate_right(node->_parent);
+                        sibling = this->findSibling(node);
+                    }
+                    /* case 2-A */
+                    if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
+                        siblig->_color = RED;
+                        node->_parent->_color = BLACK;
+                        node = node->_parent;
+                    }
+                    else{
+                        /* case 2-B */
+                        if (sibling->_right->_color == BLACK){
+                            sibling->_left->_color = BLACK;
+                            sibling->_color = RED;
+                            this->rotate_left(sibling);
+                            sibling = this->findSibling(node);
+                        }
+                        /* case 2-C */
+                        sibling->_color = node->_parent->_color;
+                        node->_parent->_color = BLACK;
+                        sibling->_right->_color = BLACK;
+                        this->rotate_right(node->_parent);
+                        break ;
+                    }
+                }
+            }
+            node->_color = BLACK;
+        }
+
+        /*
+        ** target = matching node
+        ** removeNode = actually removed node
+        ** doubleBlack = double black node
+        */
+        node_pointer eraseNode(const value_type& val){
+            node_pointer target = this->findNode(val);
+            node_pointer removeNode;
+            node_pointer doubleBlack;
+
+            if (target == NULL){
+                return NULL;
+            }
+
+            if (isLastElement(target)){
+                removeNode = target;
+            }
+            else {
+                removeNode = this->findMaxInLeft(target);
+                target->_value = removeNode->_value;
+            }
+            doubleBlack = removeNode->_left;
+            doubleBlack->_parent = removeNode->_parent;
+
+            if (removeNode->_parent == NULL){
+                this->_root = doubleBlack;
+            }
+            else{
+                if (removeNode == removeNode->_parent->_left){
+                    removeNode->_parent->_left = doubleBlack;
+                }
+                else{
+                    removeNode->_parent->_right = doubleBlack;
+                }
+            }
+
+            if (removeNode->_color == BLACK){
+                this->reOrderAfterErase(doubleBlack);
+            }
+            return removeNode;
+        }
+    };
 
 }
 
