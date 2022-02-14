@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/14 17:25:23 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:21:23 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,12 +383,24 @@ namespace ft {
                 curr->_right = newNode;
             }
         }
+
+        void clearTree(node_pointer root){
+            if (root == this->_NIL){
+                return ;
+            }
+            this->clearTree(root->_left);
+            this->clearTree(root->_right);
+            this->_nodeAlloc.destroy(root);
+            this->_nodeAlloc.deallocate(root, 1);
+        }
+
     public :
         /* Constructor, Destructor */
         tree(const value_compare& comp) : _root(NULL), _NIL(NULL), _compare(comp) {
             this->_NIL = this->_nodeAlloc.allocate(1);
             this->_nodeAlloc.construct(this->_NIL, Node());
             this->_NIL->_color = BLACK;
+            this->_root = this->_NIL;
 
         }
         
@@ -397,12 +409,14 @@ namespace ft {
         }
 
         ~tree(void){
-
+            this->clear();
+            this->_nodeAlloc.destroy(this->_NIL);
+            this->_nodeAlloc.deallocate(this->_NIL, 1);
         }
 
     public :
         bool insert(const value_type& val){
-            if (this->_root == NULL){
+            if (this->_root == this->_NIL){
                 this->_root = this->createNode(val);
                 this->_root->_left = this->_NIL;
                 this->_root->_right = this->_NIL;
@@ -445,9 +459,12 @@ namespace ft {
         }
 
         void clear(void){
-
+            this->clearTree(this->_root);
+            this->_root = this->_NIL;
         }
-
+        /*
+        ** 밑에 두개의 함수는 나중에 지워야 할 것
+        */
         void printHelper(node_pointer root, std::string indent, bool last){
             if (root != this->_NIL){
                 std::cout << indent;
