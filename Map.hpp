@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 09:26:38 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/10 15:24:59 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/14 11:16:50 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,18 @@ namespace ft {
         typedef T                                           mapped_type;
         typedef ft::pair<const key_type, mapped_type>       value_type;
         typedef Compare                                     key_compare;
-        // typedef                                         value_compare;
+        class value_compare {
+        protected :
+            Compare comp;
+        public :
+            value_compare(Compare c) : comp(c){}
+            typedef bool        result_type;
+            typedef value_type  first_argument_type;
+            typedef value_type  second_argument_type;
+            result_type operator()(const value_type& x, const value_type& y) const{
+                return comp(x._first, y._first);
+            }
+        };
         typedef Alloc                                       allocator_type;
         typedef typename allocator_type::reference          reference;
         typedef typename allocator_type::const_reference    const_reference;
