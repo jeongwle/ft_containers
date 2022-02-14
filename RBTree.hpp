@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/13 18:34:42 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/14 17:25:23 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ namespace ft {
 
             }
 
+            Node(const value_type& val) : _value(val), _parent(NULL), _left(NULL), _right(NULL), _color(RED){
+                
+            }
+
             Node(const Node& copy) : _value(copy._value), _parent(copy._parent), _left(copy._left), _right(copy._right), _color(copy._color){
 
             }
@@ -58,12 +62,14 @@ namespace ft {
                 return *(this);
             }
         };
-        typedef Node*       node_pointer;
+        typedef Node*                   node_pointer;
+        typedef std::allocator<Node>    node_alloc;
 
     private :
         /* private variables */
         node_pointer _root;
         node_pointer _NIL;
+        node_alloc _nodeAlloc;
         Compare _compare;
 
     private :
@@ -118,6 +124,9 @@ namespace ft {
                     parent->_right = child;
                 }
             }
+            else {
+                this->_root = child;
+            }
         }
 
         void rotate_right(node_pointer node){
@@ -137,6 +146,9 @@ namespace ft {
                 else{
                     parent->_left = child;
                 }
+            }
+            else {
+                this->_root = child;
             }
         }
 
@@ -179,7 +191,7 @@ namespace ft {
                 this->rotate_left(node->_parent);
                 node = node->_left;
             }
-            else if ((node == node->_parent->left) && (node->_parent == grandparent->_right)){
+            else if ((node == node->_parent->_left) && (node->_parent == grandparent->_right)){
                 this->rotate_right(node->_parent);
                 node = node->_right;
             }
@@ -190,7 +202,7 @@ namespace ft {
             node_pointer grandparent = findGrandParent(node);
             node->_parent->_color = BLACK;
             grandparent->_color = RED;
-            if (node == node->_parent->left){
+            if (node == node->_parent->_left){
                 this->rotate_right(grandparent);
             }
             else{
@@ -208,10 +220,10 @@ namespace ft {
                 return NULL;
             }
             while (curr != this->_NIL){
-                if (!_compare(val, curr->_value && !_compare(curr->_value, val))){
+                if (!(this->_compare(val, curr->_value)) && !(this->_compare(curr->_value, val))){
                     return curr;
                 }
-                if (_compare(val, curr->_value)){
+                if (this->_compare(val, curr->_value)){
                     curr = curr->_left;
                 }
                 else{
@@ -245,21 +257,21 @@ namespace ft {
                         this->rotate_left(node->_parent);
                         sibling = this->findSibling(node);
                     }
-                    /* case 2-A */
+                    /* case sibling의 자식이 모두 BLACK */
                     if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
-                        siblig->_color = RED;
+                        sibling->_color = RED;
                         node->_parent->_color = BLACK;
                         node = node->_parent;
                     }
                     else{
-                        /* case 2-B */
+                        /* case sibling의 오른쪽 자식이 BLACK*/
                         if (sibling->_right->_color == BLACK){
                             sibling->_left->_color = BLACK;
                             sibling->_color = RED;
                             this->rotate_right(sibling);
                             sibling = this->findSibling(node);
                         }
-                        /* case 2-C */
+                        /* case sibling의 자식이 모두 RED */
                         sibling->_color = node->_parent->_color;
                         node->_parent->_color = BLACK;
                         sibling->_right->_color = BLACK;
@@ -277,7 +289,7 @@ namespace ft {
                     }
                     /* case 2-A */
                     if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
-                        siblig->_color = RED;
+                        sibling->_color = RED;
                         node->_parent->_color = BLACK;
                         node = node->_parent;
                     }
@@ -342,8 +354,124 @@ namespace ft {
             }
             return removeNode;
         }
-    };
+        
+        bool alreadyExist(const value_type& val){
+            /*findNode의 return값이 NULL이면 찾는 노드가 없다.*/
+            return (this->findNode(val) != NULL);
+        }
 
+        node_pointer createNode(const value_type& val){
+            if(!this->alreadyExist(val)){
+                node_pointer newNode = this->_nodeAlloc.allocate(1);
+                this->_nodeAlloc.construct(newNode, Node(val));
+                return newNode;
+            }
+            return NULL;
+        }
+
+        void setNewNode(node_pointer curr, node_pointer newNode, std::string direction){
+            if (direction == "left"){
+                newNode->_parent = curr;
+                newNode->_left = this->_NIL;
+                newNode->_right = this->_NIL;
+                curr->_left = newNode;
+            }
+            else if (direction == "right"){
+                newNode->_parent = curr;
+                newNode->_left = this->_NIL;
+                newNode->_right = this->_NIL;
+                curr->_right = newNode;
+            }
+        }
+    public :
+        /* Constructor, Destructor */
+        tree(const value_compare& comp) : _root(NULL), _NIL(NULL), _compare(comp) {
+            this->_NIL = this->_nodeAlloc.allocate(1);
+            this->_nodeAlloc.construct(this->_NIL, Node());
+            this->_NIL->_color = BLACK;
+
+        }
+        
+        tree(const tree& copy){
+
+        }
+
+        ~tree(void){
+
+        }
+
+    public :
+        bool insert(const value_type& val){
+            if (this->_root == NULL){
+                this->_root = this->createNode(val);
+                this->_root->_left = this->_NIL;
+                this->_root->_right = this->_NIL;
+                this->insert_case1(this->_root);
+                return true;
+            }
+            node_pointer curr = this->_root;
+            node_pointer newNode;
+            if ((newNode = this->createNode(val))){
+                while (curr != this->_NIL){
+                    if (this->_compare(val, curr->_value)){
+                        if (curr->_left == this->_NIL){
+                            this->setNewNode(curr, newNode, "left");
+                            this->insert_case1(newNode);
+                            return true;
+                        }
+                        curr = curr->_left;
+                    }
+                    else{
+                        if (curr->_right == this->_NIL){
+                            this->setNewNode(curr, newNode, "right");
+                            this->insert_case1(newNode);
+                            return true;
+                        }
+                        curr = curr->_right;
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool erase(const value_type& val){
+            node_pointer removeNode = this->eraseNode(val);
+            if (removeNode != NULL){
+                this->_nodeAlloc.destroy(removeNode);
+                this->_nodeAlloc.deallocate(removeNode, 1);
+                return true;
+            }
+            return false;
+        }
+
+        void clear(void){
+
+        }
+
+        void printHelper(node_pointer root, std::string indent, bool last){
+            if (root != this->_NIL){
+                std::cout << indent;
+                if (last) {
+                    std::cout << "R----";
+                    indent += "     ";
+                }
+                else{
+                    std::cout << "L----";
+		            indent += "|    ";
+                }
+                std::string sColor = root->_color ? "RED" : "BLACK";
+                std::cout << root->_value.first << "(" << sColor << ")" << std::endl;
+                this->printHelper(root->_left, indent, false);
+                this->printHelper(root->_right, indent, true);
+            }
+        }
+
+        void prettyPrint(void){
+            if (this->_root){
+                this->printHelper(this->_root, "", true);
+            }
+        }
+    };
 }
 
 #endif
