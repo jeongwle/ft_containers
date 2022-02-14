@@ -1,0 +1,15 @@
+testCode/
+
+containers_test/
+
+practice.cpp
+
+a.out
+
+.DS_Store
+
+.vscode/
+
+VectorTest.log
+
+StackTest.log
