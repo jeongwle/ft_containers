@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 09:26:38 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/14 11:16:50 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/18 13:39:01 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ namespace ft {
             typedef value_type  first_argument_type;
             typedef value_type  second_argument_type;
             result_type operator()(const value_type& x, const value_type& y) const{
-                return comp(x._first, y._first);
+                return comp(x.first, y.first);
             }
         };
         typedef Alloc                                       allocator_type;
