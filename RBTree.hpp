@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/18 16:21:34 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/18 17:00:23 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -439,6 +439,16 @@ namespace ft {
         }
 
     public :
+        tree& operator=(const tree& object){
+            std::cout << "here" << std::endl;
+            this->clear();
+            if (object._root == object._NIL){
+                return *(this);
+            }
+            this->copyTree(object._root, NULL, object._NIL, 1);
+            return *(this);
+        }
+
         bool insert(const value_type& val){
             if (this->_root == this->_NIL){
                 this->_root = this->createNode(val);
