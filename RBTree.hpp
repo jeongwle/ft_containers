@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/14 18:21:23 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/18 16:21:34 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,8 @@ namespace ft {
                 
             }
 
-            Node(const Node& copy) : _value(copy._value), _parent(copy._parent), _left(copy._left), _right(copy._right), _color(copy._color){
-
-            }
-
             ~Node(void){
 
-            }
-
-            Node& operator=(const Node& object){
-                this->_value = object._value;
-                this->_parent = object._parent;
-                this->_left = object._left;
-                this->_right = object._right;
-                this->_color = object._color;
-                return *(this);
             }
         };
         typedef Node*                   node_pointer;
@@ -394,6 +381,36 @@ namespace ft {
             this->_nodeAlloc.deallocate(root, 1);
         }
 
+        void copyTree(node_pointer copyRoot, node_pointer newParent, node_pointer copyNIL, bool direction){
+            if (copyRoot == copyNIL && direction){
+                newParent->_left = this->_NIL;
+                return ;
+            }
+            else if(copyRoot == copyNIL && !direction){
+                newParent->_right = this->_NIL;
+                return ;
+            }
+            node_pointer newNode = this->_nodeAlloc.allocate(1);
+            this->_nodeAlloc.construct(newNode, Node(copyRoot->_value));
+            newNode->_parent = newParent;
+            newNode->_color = copyRoot->_color;
+            if (!newParent){
+                this->_root = newNode;
+            }
+            if (direction){
+                if (newParent){
+                    newParent->_left = newNode;
+                }
+            }
+            else{
+                if (newParent){
+                    newParent->_right = newNode;
+                }
+            }
+            this->copyTree(copyRoot->_left, newNode, copyNIL, 1);
+            this->copyTree(copyRoot->_right, newNode, copyNIL, 0);
+        }
+
     public :
         /* Constructor, Destructor */
         tree(const value_compare& comp) : _root(NULL), _NIL(NULL), _compare(comp) {
@@ -404,8 +421,15 @@ namespace ft {
 
         }
         
-        tree(const tree& copy){
-
+        tree(const tree& copy) : _compare(copy._compare){
+            this->_NIL = this->_nodeAlloc.allocate(1);
+            this->_nodeAlloc.construct(this->_NIL, Node());
+            this->_NIL->_color = BLACK;
+            this->_root = this->_NIL;
+            if (copy._root == copy._NIL){
+                return ;
+            }
+            this->copyTree(copy._root, NULL, copy._NIL, 1);
         }
 
         ~tree(void){
