@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/18 17:00:23 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/19 14:48:10 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #define RED 1
 #include <memory>
 #include "MapUtils.hpp"
+#include "Utils.hpp"
+#include "Iterator.hpp"
 
 namespace ft {
     template <class T, class Compare, class Alloc = std::allocator<T> >
@@ -38,15 +40,12 @@ namespace ft {
 
         public :
             Node(void) : _value(value_type()), _parent(NULL), _left(NULL), _right(NULL), _color(RED){
-
             }
 
             Node(const value_type& val) : _value(val), _parent(NULL), _left(NULL), _right(NULL), _color(RED){
-                
             }
 
             ~Node(void){
-
             }
         };
         typedef Node*                   node_pointer;
@@ -218,6 +217,18 @@ namespace ft {
                 }
             }
             return NULL;
+        }
+
+        node_pointer findMinInRight(node_pointer node){
+            node_pointer curr = node;
+            if (curr->_right == this->_NIL){
+                return NULL;
+            }
+            curr = curr->_right;
+            while (curr->_left != this->_NIL){
+                curr = curr->_left;
+            }
+            return curr;
         }
         
         node_pointer findMaxInLeft(node_pointer node){
@@ -492,6 +503,62 @@ namespace ft {
             return false;
         }
 
+        node_pointer findFirstNode(void){
+            if (this->_root == this->_NIL){
+                return NULL;
+            }
+            node_pointer curr = this->_root;
+            while (curr->_left != this->_NIL){
+                curr = curr->_left;
+            }
+            return curr;
+        }
+
+        node_pointer findLastNode(void){
+            if (this->_root == this->_NIL){
+                return NULL;
+            }
+            node_pointer curr = this->_root;
+            while (curr->_right != this->_NIL){
+                curr = curr->_right;
+            }
+            return curr;
+        }
+
+        node_pointer findNextNode(node_pointer node){
+            node_pointer curr = node;
+            if (curr == this->findLastNode()){
+                return NULL;
+            }
+            if (curr->_right != this->_NIL){
+                return this->findMinInRight(curr);
+            }
+            while (curr->_parent){
+                if (this->_compare(node->_value, curr->_parent->_value)){
+                    return curr->_parent;
+                }
+                curr = curr->_parent;
+            }
+            return curr;
+        }
+
+        node_pointer findPrevNode(node_pointer node){
+            node_pointer curr = node;
+            if (curr == this->findFirstNode()){
+                return NULL;
+            }
+            if (curr->_left != this->_NIL){
+                return this->findMaxInLeft(curr);
+            }
+            while (curr->_parent){
+                if (!(this->_compare(node->_value, curr->_parent->_value))){
+                    return curr->_parent;
+                }
+                curr = curr->_parent;
+            }
+            return curr;
+        }
+
         void clear(void){
             this->clearTree(this->_root);
             this->_root = this->_NIL;
@@ -521,6 +588,53 @@ namespace ft {
             if (this->_root){
                 this->printHelper(this->_root, "", true);
             }
+        }
+    };
+
+    template <class T, class Compare, bool Const>
+    class treeIterator {
+    public :
+        /* typedef */
+        typedef T                                                                   value_type;
+        typedef Compare                                                             value_compare;
+        typedef typename ft::isConst<value_type*, const value_type*, Const>::type   pointer;
+        typedef typename ft::isConst<value_type&, const value_type&, Const>::type   reference;
+        typedef std::ptrdiff_t                                                      difference_type;
+        typedef ft::bidirectional_iterator_tag                                      iterator_category;
+        typedef typename ft::tree<value_type, value_compare>                        tree_type;
+        typedef tree_type*                                                          tree_pointer;
+        typedef typename ft::tree<value_type, value_compare>::Node                  node_type;
+        typedef typename ft::isConst<node_type*, const node_type*, Const>::type     node_pointer;
+        typedef typename ft::isConst<node_type&, const node_type&, Const>::type     node_reference;
+
+    private :
+        /* variables */
+        node_pointer _ptr;
+        tree_pointer _tree;
+
+    public :
+        /* constructor, destructor, getter, setter */
+        treeIterator(node_pointer ptr = NULL, tree_pointer tree = NULL) : _ptr(ptr), _tree(tree){
+        }
+
+        treeIterator(const treeIterator<value_type, value_compare, false>& copy) : _ptr(copy.getPtr()), _tree(copy.getTree()){
+        }
+
+        ~treeIterator(void){
+        }
+
+        treeIterator& operator=(const treeIterator& object){
+            this->_ptr = object.getPtr();
+            this->_tree = object.getTree();
+            return *(this);
+        }
+
+        pointer getPtr(void) const{
+            return this->_ptr;
+        }
+
+        tree_pointer getTree(void) const{
+            return this->_tree;
         }
     };
 }
