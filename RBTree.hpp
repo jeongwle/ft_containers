@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/19 14:48:10 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/19 17:08:16 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -635,6 +635,54 @@ namespace ft {
 
         tree_pointer getTree(void) const{
             return this->_tree;
+        }
+
+    public :
+        /* operator */
+        treeIterator& operator++(void){
+            this->_ptr = this->_tree->findNextNode(this->_ptr);
+            return *(this);
+        }
+
+        treeIterator operator++(int){
+            treeIterator temp(*this);
+            this->_ptr = this->_tree->findNextNode(this->_ptr);
+            return temp;
+        }
+
+        treeIterator& operator--(void){
+            this->_ptr = this->_tree->findPrevNode(this->_ptr);
+            return *(this);
+        }
+
+        treeIterator operator--(int){
+            treeIterator temp(*this);
+            this->_ptr = this->_tree->findPrevNode(this->_ptr);
+            return temp;
+        }
+
+        bool operator==(const treeIterator<value_type, value_compare, false>& tIter) const{
+            return (this->_ptr == tIter.getPtr());
+        }
+
+        bool operator==(const treeIterator<value_type, value_compare, true>& tIter) const{
+            return (this->_ptr == tIter.getPtr());
+        }
+
+        bool operator!=(const treeIterator<value_type, value_compare, false>& tIter) const{
+            return (this->_ptr != tIter.getPtr());
+        }
+
+        bool operator!=(const treeIterator<value_type, value_compare, true>& tIter) const{
+            return (this->_ptr != tIter.getPtr());
+        }
+
+        reference operator*(void) const{
+            return this->_ptr->_value;
+        }
+
+        pointer operator->(void) const{
+            return (&(this->_ptr->_value));
         }
     };
 }
