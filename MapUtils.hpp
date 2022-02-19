@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 09:33:57 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/14 15:57:05 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/19 15:02:31 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,16 @@ namespace ft {
     public :
         /* constructor, destructor */
         pair(void) : first(first_type()), second(second_type()){
-
         }
 
         pair(const first_type& a, const second_type& b) : first(a), second(b){
-
         }
 
         template <class U, class V>
         pair(const pair<U, V>& pr) : first(pr.first), second(pr.second){
-
         }
 
         ~pair(void){
-
         }
     
     public :
