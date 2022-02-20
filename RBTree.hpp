@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/20 12:51:46 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/20 13:22:59 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -527,6 +527,9 @@ namespace ft {
 
         node_pointer findNextNode(node_pointer node){
             node_pointer curr = node;
+            if (curr == this->_NIL){
+                return this->findFirstNode();
+            }
             if (curr == this->findLastNode()){
                 return NULL;
             }
@@ -544,6 +547,9 @@ namespace ft {
 
         node_pointer findPrevNode(node_pointer node){
             node_pointer curr = node;
+            if (curr == this->_NIL){
+                return this->findLastNode();
+            }
             if (curr == this->findFirstNode()){
                 return NULL;
             }
