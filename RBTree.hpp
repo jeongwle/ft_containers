@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/19 17:08:16 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/20 12:51:46 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ namespace ft {
             ~Node(void){
             }
         };
-        typedef Node*                   node_pointer;
-        typedef std::allocator<Node>    node_alloc;
+        typedef Node*                                           node_pointer;
+        typedef typename Alloc::template rebind<Node>::other    node_alloc;
 
     private :
         /* private variables */
