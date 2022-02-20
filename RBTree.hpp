@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/20 13:22:59 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/20 15:42:49 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,25 +198,6 @@ namespace ft {
 
         bool isLastElement(node_pointer node){
             return (node->_left == this->_NIL && node->_right == this->_NIL);
-        }
-
-        node_pointer findNode(const value_type& val){
-            node_pointer curr = this->_root;
-            if (curr == NULL){
-                return NULL;
-            }
-            while (curr != this->_NIL){
-                if (!(this->_compare(val, curr->_value)) && !(this->_compare(curr->_value, val))){
-                    return curr;
-                }
-                if (this->_compare(val, curr->_value)){
-                    curr = curr->_left;
-                }
-                else{
-                    curr = curr->_right;
-                }
-            }
-            return NULL;
         }
 
         node_pointer findMinInRight(node_pointer node){
@@ -503,6 +484,25 @@ namespace ft {
             return false;
         }
 
+        node_pointer findNode(const value_type& val){
+            node_pointer curr = this->_root;
+            if (curr == NULL){
+                return NULL;
+            }
+            while (curr != this->_NIL){
+                if (!(this->_compare(val, curr->_value)) && !(this->_compare(curr->_value, val))){
+                    return curr;
+                }
+                if (this->_compare(val, curr->_value)){
+                    curr = curr->_left;
+                }
+                else{
+                    curr = curr->_right;
+                }
+            }
+            return NULL;
+        }
+
         node_pointer findFirstNode(void){
             if (this->_root == this->_NIL){
                 return NULL;
@@ -563,6 +563,14 @@ namespace ft {
                 curr = curr->_parent;
             }
             return curr;
+        }
+
+        node_pointer getNilNode(void) const{
+            return this->_NIL;
+        }
+
+        node_alloc getNodeAlloc(void) const{
+            return this->_nodeAlloc;
         }
 
         void clear(void){
