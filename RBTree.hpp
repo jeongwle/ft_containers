@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 16:09:28 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/21 17:57:36 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -485,7 +485,7 @@ namespace ft {
 
         node_pointer findNode(const value_type& val){
             node_pointer curr = this->_root;
-            if (curr == NULL){
+            if (curr == this->_NIL){
                 return NULL;
             }
             while (curr != this->_NIL){
@@ -504,7 +504,7 @@ namespace ft {
 
         node_pointer findFirstNode(void){
             if (this->_root == this->_NIL){
-                return NULL;
+                return this->_NIL;
             }
             node_pointer curr = this->_root;
             while (curr->_left != this->_NIL){
@@ -530,7 +530,7 @@ namespace ft {
                 return this->findFirstNode();
             }
             if (curr == this->findLastNode()){
-                return NULL;
+                return this->_NIL;
             }
             if (curr->_right != this->_NIL){
                 return this->findMinInRight(curr);
@@ -550,7 +550,7 @@ namespace ft {
                 return this->findLastNode();
             }
             if (curr == this->findFirstNode()){
-                return NULL;
+                return this->_NIL;
             }
             if (curr->_left != this->_NIL){
                 return this->findMaxInLeft(curr);
@@ -565,7 +565,7 @@ namespace ft {
         }
 
         bool lowerThanFirst(const value_type& val){
-            if (this->findFirstNode() == NULL){
+            if (this->findFirstNode() == this->_NIL){
                 return false;
             }
             if (this->_compare(val, this->findFirstNode()->_value)){
@@ -652,7 +652,7 @@ namespace ft {
             return *(this);
         }
 
-        pointer getPtr(void) const{
+        node_pointer getPtr(void) const{
             return this->_ptr;
         }
 
