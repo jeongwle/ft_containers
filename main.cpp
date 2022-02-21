@@ -1,10 +1,90 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/21 16:35:21 by jeongwle          #+#    #+#             */
+/*   Updated: 2022/02/21 17:51:05 by jeongwle         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-#include <stack>
 #include <vector>
-#include "Stack.hpp"
+#include <stack>
+#include <map>
 #include "Vector.hpp"
+#include "Stack.hpp"
+#include "Map.hpp"
+
+/*
+ ** Map Test Start
+ */
+template <class T1, class T2>
+void PrintMap(std::map<T1, T2> stdMap, ft::map<T1, T2> ftMap, std::ofstream& fout){
+    size_t stdSize = stdMap.size();
+    size_t ftSize = ftMap.size();
+
+    fout << "| std map |" << " size = " << stdSize << " | key = ";
+    for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
+        fout << stdIt->first << " ";
+    }
+    fout << "| value = ";
+    for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
+        fout << stdIt->second << " ";
+    }
+    fout << std::endl;
+
+    fout << "|  ft map |" << " size = " << ftSize << " | key = ";
+    for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
+        fout << ftIt->first << " ";
+    }
+    fout << "| value = ";
+    for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
+        fout << ftIt->second << " ";
+    }
+    fout << std::endl;
+}
+
+
+void MapTest(void){
+    std::ofstream fout("MapTest.log");
+    
+    std::map<char, int> stdMap;
+    ft::map<char, int> ftMap;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(50) << "Default Constructor" << std::setw(30) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintMap(stdMap, ftMap, fout);
+
+    char j = 'a';
+    for (int i = 1; i < 6; i++){
+        stdMap.insert(std::make_pair(j, i));
+        j++;
+    }
+    j = 'a';
+    for (int i = 1; i < 6; i++){
+        ftMap.insert(ft::make_pair(j, i));
+        j++;
+    }
+    std::map<char, int> stdMapRange(stdMap.begin(), stdMap.end());
+    ft::map<char, int> ftMapRange(ftMap.begin(), ftMap.end());
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(49) << "Range Constructor" << std::setw(31) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintMap(stdMapRange, ftMapRange, fout);
+
+
+
+
+
+
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+}
 
 /*
  ** Stack Test Start
@@ -986,6 +1066,7 @@ void VectorTest(void){
 int main(void){
     VectorTest();
     StackTest();
-    system("leaks a.out");
+    MapTest();
+    // system("leaks a.out");
     return (0);
 }
