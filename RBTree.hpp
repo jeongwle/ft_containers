@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/20 15:42:49 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/21 14:57:58 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -563,6 +563,16 @@ namespace ft {
                 curr = curr->_parent;
             }
             return curr;
+        }
+
+        bool lowerThanFirst(const value_type& val){
+            if (this->findFirstNode() == NULL){
+                return false;
+            }
+            if (this->_compare(val, this->findFirstNode()->_value)){
+                return true;
+            }
+            return false;
         }
 
         node_pointer getNilNode(void) const{
