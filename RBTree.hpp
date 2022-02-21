@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 14:57:58 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/21 16:09:28 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -432,7 +432,6 @@ namespace ft {
 
     public :
         tree& operator=(const tree& object){
-            std::cout << "here" << std::endl;
             this->clear();
             if (object._root == object._NIL){
                 return *(this);
