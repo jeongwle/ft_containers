@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 17:57:36 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/21 20:06:46 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ namespace ft {
         /* private variables */
         node_pointer _root;
         node_pointer _NIL;
+        node_pointer _NILTemp;
         node_alloc _nodeAlloc;
         Compare _compare;
 
@@ -405,18 +406,24 @@ namespace ft {
 
     public :
         /* Constructor, Destructor */
-        tree(const value_compare& comp) : _root(NULL), _NIL(NULL), _compare(comp) {
+        tree(const value_compare& comp) : _root(NULL), _NIL(NULL), _NILTemp(NULL), _compare(comp) {
             this->_NIL = this->_nodeAlloc.allocate(1);
+            this->_NILTemp = this->_nodeAlloc.allocate(1);
             this->_nodeAlloc.construct(this->_NIL, Node());
+            this->_nodeAlloc.construct(this->_NILTemp, Node(ft::make_pair(32766, 542248797)));
             this->_NIL->_color = BLACK;
+            this->_NILTemp->_color = BLACK;
             this->_root = this->_NIL;
 
         }
         
         tree(const tree& copy) : _compare(copy._compare){
             this->_NIL = this->_nodeAlloc.allocate(1);
+            this->_NILTemp = this->_nodeAlloc.allocate(1);
             this->_nodeAlloc.construct(this->_NIL, Node());
+            this->_nodeAlloc.construct(this->_NILTemp, Node(ft::make_pair(32766, 542248797)));
             this->_NIL->_color = BLACK;
+            this->_NILTemp->_color = BLACK;
             this->_root = this->_NIL;
             if (copy._root == copy._NIL){
                 return ;
@@ -427,7 +434,9 @@ namespace ft {
         ~tree(void){
             this->clear();
             this->_nodeAlloc.destroy(this->_NIL);
+            this->_nodeAlloc.destroy(this->_NILTemp);
             this->_nodeAlloc.deallocate(this->_NIL, 1);
+            this->_nodeAlloc.deallocate(this->_NILTemp, 1);
         }
 
     public :
@@ -527,6 +536,9 @@ namespace ft {
         node_pointer findNextNode(node_pointer node){
             node_pointer curr = node;
             if (curr == this->_NIL){
+                return NULL;
+            }
+            if (curr == this->_NILTemp){
                 return this->findFirstNode();
             }
             if (curr == this->findLastNode()){
@@ -546,11 +558,14 @@ namespace ft {
 
         node_pointer findPrevNode(node_pointer node){
             node_pointer curr = node;
+            if (curr == this->_NILTemp){
+                return NULL;
+            }
             if (curr == this->_NIL){
                 return this->findLastNode();
             }
             if (curr == this->findFirstNode()){
-                return this->_NIL;
+                return this->_NILTemp;
             }
             if (curr->_left != this->_NIL){
                 return this->findMaxInLeft(curr);
