@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 20:06:46 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/22 17:50:01 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,6 +293,36 @@ namespace ft {
             node->_color = BLACK;
         }
 
+        node_pointer swapTargetRemoveNode(node_pointer target, node_pointer removeNode){
+            node_pointer node = this->_nodeAlloc.allocate(1);
+            this->_nodeAlloc.construct(node, Node(removeNode->_value));
+            node->_parent = target->_parent;
+            node->_left = target->_left;
+            node->_right = target->_right;
+            node->_color = target->_color;
+            if (node->_left != this->_NIL){
+                node->_left->_parent = node;
+            }
+            if (node->_right != this->_NIL){
+                node->_right->_parent = node;
+            }
+            if (node->_parent){
+                if (node->_parent->_left == target){
+                    node->_parent->_left = node;
+                }
+                else{
+                    node->_parent->_right = node;
+                }
+            }
+            if (this->_root == target){
+                this->_root = node;
+            }
+            this->_nodeAlloc.destroy(target);
+            this->_nodeAlloc.deallocate(target, 1);
+            target = node;
+            return target;
+        }
+
         /*
         ** target = matching node
         ** removeNode = actually removed node
@@ -312,7 +342,7 @@ namespace ft {
             }
             else {
                 removeNode = this->findMaxInLeft(target);
-                target->_value = removeNode->_value;
+                target = this->swapTargetRemoveNode(target, removeNode);
             }
             doubleBlack = removeNode->_left;
             doubleBlack->_parent = removeNode->_parent;
