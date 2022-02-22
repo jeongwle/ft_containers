@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:35:21 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 17:51:05 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/22 17:50:03 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,41 @@
  ** Map Test Start
  */
 template <class T1, class T2>
+void PrintElement(ft::map<T1, T2> ftMap, std::ofstream& fout){
+    size_t ftSize = ftMap.size();
+
+    fout << "|  ft map |" << " size = " << ftSize << " | key = ";
+    for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
+        fout << "\'" <<ftIt->first  << "\'" << " ";
+    }
+    fout << "| value = ";
+    for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
+        fout << ftIt->second << " ";
+    }
+}
+
+template <class T1, class T2>
+void PrintElement(std::map<T1, T2> stdMap, std::ofstream& fout){
+    size_t stdSize = stdMap.size();
+
+    fout << "| std map |" << " size = " << stdSize << " | key = ";
+    for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
+        fout << "\'" << stdIt->first << "\'" << " ";
+    }
+    fout << "| value = ";
+    for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
+        fout << stdIt->second << " ";
+    }
+}
+
+template <class T1, class T2>
 void PrintMap(std::map<T1, T2> stdMap, ft::map<T1, T2> ftMap, std::ofstream& fout){
     size_t stdSize = stdMap.size();
     size_t ftSize = ftMap.size();
 
     fout << "| std map |" << " size = " << stdSize << " | key = ";
     for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
-        fout << stdIt->first << " ";
+        fout << "\'" << stdIt->first << "\'" << " ";
     }
     fout << "| value = ";
     for (typename std::map<T1, T2>::iterator stdIt = stdMap.begin(); stdIt != stdMap.end(); stdIt++){
@@ -40,7 +68,7 @@ void PrintMap(std::map<T1, T2> stdMap, ft::map<T1, T2> ftMap, std::ofstream& fou
 
     fout << "|  ft map |" << " size = " << ftSize << " | key = ";
     for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
-        fout << ftIt->first << " ";
+        fout << "\'" << ftIt->first << "\'" << " ";
     }
     fout << "| value = ";
     for (typename ft::map<T1, T2>::iterator ftIt = ftMap.begin(); ftIt != ftMap.end(); ftIt++){
@@ -77,6 +105,313 @@ void MapTest(void){
     fout << "--------------------------------------------------------------------------------" << std::endl;
     PrintMap(stdMapRange, ftMapRange, fout);
 
+    std::map<char, int> stdMapCopy(stdMapRange);
+    ft::map<char, int> ftMapCopy(ftMapRange);
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(49) << "Copy Constructor" << std::setw(31) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintMap(stdMapCopy, ftMapCopy, fout);
+    stdMapCopy.insert(std::make_pair('f', 6));
+    ftMapCopy.insert(ft::make_pair('f', 6));
+    fout << "|" << std::setw(43) << "Origin" << std::setw(37) << "|" << std::endl;
+    PrintMap(stdMapRange, ftMapRange, fout);
+    fout << "|" << std::setw(45) << "deep copy" << std::setw(35) << "|" << std::endl;
+    PrintMap(stdMapCopy, ftMapCopy, fout);
+
+
+    std::map<char, int> stdMapOper;
+    ft::map<char, int> ftMapOper;
+    stdMapOper = stdMapCopy;
+    ftMapOper = ftMapCopy;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(46) << " Operator= " << std::setw(34) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintMap(stdMapOper, ftMapOper, fout);
+    stdMapOper.insert(std::make_pair('g', 7));
+    ftMapOper.insert(ft::make_pair('g', 7));
+    fout << "|" << std::setw(43) << "Origin" << std::setw(37) << "|" << std::endl;
+    PrintMap(stdMapCopy, ftMapCopy, fout);
+    fout << "|" << std::setw(45) << "deep copy" << std::setw(35) << "|" << std::endl;
+    PrintMap(stdMapOper, ftMapOper, fout);
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(52) << "begin, end, rbegin, rend" << std::setw(28) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std map |  begin key = " << "\'" << stdMapOper.begin()->first << "\'" << " |  begin value = " << stdMapOper.begin()->second;
+    fout << " |  end key = " << "\'" << (--stdMapOper.end())->first << "\'" << " |  end value = " << (--stdMapOper.end())->second << std::endl;
+    fout << "| std map | rbegin key = " << "\'" << stdMapOper.rbegin()->first << "\'" << " | rbegin value = " << stdMapOper.rbegin()->second;
+    fout << " | rend key = " << "\'" << (--stdMapOper.rend())->first << "\'" << " | rend value = " << (--stdMapOper.rend())->second << std::endl;
+    fout << "|  ft map |  begin key = " << "\'" << ftMapOper.begin()->first << "\'" << " |  begin value = " << ftMapOper.begin()->second;
+    fout << " |  end key = " << "\'" << (--ftMapOper.end())->first << "\'" << " |  end value = " << (--ftMapOper.end())->second << std::endl;
+    fout << "|  ft map | rbegin key = " << "\'" << ftMapOper.rbegin()->first << "\'" << " | rbegin value = " << ftMapOper.rbegin()->second;
+    fout << " | rend key = " << "\'" << (--ftMapOper.rend())->first << "\'" << " | rend value = " << (--ftMapOper.rend())->second << std::endl;
+
+    std::map<char, int> stdMapEmpty;
+    ft::map<char, int> ftMapEmpty;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(42) << "empty" << std::setw(38) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintElement(stdMapEmpty, fout);
+    fout << "| empty = ";
+    if (stdMapEmpty.empty()){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapEmpty, fout);
+    fout << "| empty = ";
+    if (ftMapEmpty.empty()){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    stdMapEmpty['c'] = 15;
+    ftMapEmpty['c'] = 15;
+    PrintElement(stdMapEmpty, fout);
+    fout << "| empty = ";
+    if (stdMapEmpty.empty()){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapEmpty, fout);
+    fout << "| empty = ";
+    if (ftMapEmpty.empty()){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(44) << "max size" << std::setw(36) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "| std map | max size = " << stdMapEmpty.max_size() << std::endl;
+    fout << "|  ft map | max size = " << ftMapEmpty.max_size() << std::endl;
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(45) << "operator[]" << std::setw(35) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    PrintElement(stdMapEmpty, fout);
+    fout << " | map['c'] = " << stdMapEmpty['c'] << std::endl;
+    PrintElement(ftMapEmpty, fout);
+    fout << " | map['c'] = " << ftMapEmpty['c'] << std::endl;
+    stdMapEmpty['a'];
+    ftMapEmpty['a'];
+    fout << "|" << std::setw(48) << "after map['a'];" << std::setw(32) << "|" << std::endl;
+    PrintElement(stdMapEmpty, fout);
+    fout << " | map['a'] = " << stdMapEmpty['a'] << std::endl;
+    PrintElement(ftMapEmpty, fout);
+    fout << " | map['a'] = " << ftMapEmpty['a'] << std::endl;
+    stdMapEmpty['e'] = 8;
+    ftMapEmpty['e'] = 8;
+    fout << "|" << std::setw(50) << "after map['e'] = 8;" << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapEmpty, fout);
+    fout << " | map['e'] = " << stdMapEmpty['e'] << std::endl;
+    PrintElement(ftMapEmpty, fout);
+    fout << " | map['e'] = " << ftMapEmpty['e'] << std::endl;
+    stdMapEmpty['e'] = 5;
+    ftMapEmpty['e'] = 5;
+    fout << "|" << std::setw(50) << "after map['e'] = 5;" << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapEmpty, fout);
+    fout << " | map['e'] = " << stdMapEmpty['e'] << std::endl;
+    PrintElement(ftMapEmpty, fout);
+    fout << " | map['e'] = " << ftMapEmpty['e'] << std::endl;
+
+    std::map<char, int> stdMapInsert;
+    ft::map<char, int> ftMapInsert;
+    std::pair<std::map<char, int>::iterator, bool> stdResult;
+    ft::pair<ft::map<char, int>::iterator, bool> ftResult;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(52) << "insert (single element)" << std::setw(28) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(48) << "current status" << std::setw(32) << "|" << std::endl;
+    PrintMap(stdMapInsert, ftMapInsert, fout);
+    stdResult = stdMapInsert.insert(std::make_pair('a', 1));
+    ftResult = ftMapInsert.insert(ft::make_pair('a', 1));
+    fout << "|" << std::setw(49) << "after <'a', 1> " << std::setw(31) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdResult.first->first << " | it->second = " << stdResult.first->second;
+    fout << " | bool = ";
+    if (stdResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftResult.first->first << " | it->second = " << ftResult.first->second;
+    fout << " | bool = ";
+    if (ftResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    
+    stdResult = stdMapInsert.insert(std::make_pair('a', 1));
+    ftResult = ftMapInsert.insert(ft::make_pair('a', 1));
+    fout << "|" << std::setw(49) << "again <'a', 1> " << std::setw(31) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdResult.first->first << " | it->second = " << stdResult.first->second;
+    fout << " | bool = ";
+    if (stdResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftResult.first->first << " | it->second = " << ftResult.first->second;
+    fout << " | bool = ";
+    if (ftResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    stdResult = stdMapInsert.insert(std::make_pair('a', 11));
+    ftResult = ftMapInsert.insert(ft::make_pair('a', 11));
+    fout << "|" << std::setw(55) << "second chanege <'a', 11> " << std::setw(25) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdResult.first->first << " | it->second = " << stdResult.first->second;
+    fout << " | bool = ";
+    if (stdResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftResult.first->first << " | it->second = " << ftResult.first->second;
+    fout << " | bool = ";
+    if (ftResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    stdResult = stdMapInsert.insert(std::make_pair('b', 123));
+    ftResult = ftMapInsert.insert(ft::make_pair('b', 123));
+    fout << "|" << std::setw(50) << "after <'b', 123> " << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdResult.first->first << " | it->second = " << stdResult.first->second;
+    fout << " | bool = ";
+    if (stdResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftResult.first->first << " | it->second = " << ftResult.first->second;
+    fout << " | bool = ";
+    if (ftResult.second){
+        fout << "true" << std::endl;
+    }
+    else{
+        fout << "false" << std::endl;
+    }
+
+    std::map<char, int>::iterator stdHintResult;
+    ft::map<char, int>::iterator ftHintResult;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(49) << "insert (with hint)" << std::setw(31) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    stdHintResult = stdMapInsert.insert(stdMapInsert.begin(), std::make_pair('c', 31));
+    ftHintResult = ftMapInsert.insert(ftMapInsert.begin(), ft::make_pair('c', 31));
+    fout << "|" << std::setw(50) << "after <'c', 31> " << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdHintResult->first << " | it->second = " << stdHintResult->second << std::endl;
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftHintResult->first << " | it->second = " << ftHintResult->second << std::endl;
+
+    stdHintResult = stdMapInsert.insert(stdMapInsert.end(), std::make_pair('c', 31));
+    ftHintResult = ftMapInsert.insert(ftMapInsert.end(), ft::make_pair('c', 31));
+    fout << "|" << std::setw(50) << "again <'c', 31> " << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdHintResult->first << " | it->second = " << stdHintResult->second << std::endl;
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftHintResult->first << " | it->second = " << ftHintResult->second << std::endl;
+
+    stdHintResult = stdMapInsert.insert(stdMapInsert.end(), std::make_pair('c', -10));
+    ftHintResult = ftMapInsert.insert(ftMapInsert.end(), ft::make_pair('c', -10));
+    fout << "|" << std::setw(58) << "second change <'c', -10> " << std::setw(22) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdHintResult->first << " | it->second = " << stdHintResult->second << std::endl;
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftHintResult->first << " | it->second = " << ftHintResult->second << std::endl;
+
+    stdHintResult = stdMapInsert.insert(stdMapInsert.begin(), std::make_pair('d', -11));
+    ftHintResult = ftMapInsert.insert(ftMapInsert.begin(), ft::make_pair('d', -11));
+    fout << "|" << std::setw(50) << "after <'d', -11> " << std::setw(30) << "|" << std::endl;
+    PrintElement(stdMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << stdHintResult->first << " | it->second = " << stdHintResult->second << std::endl;
+    PrintElement(ftMapInsert, fout);
+    fout << std::endl << "|         | it->first = " << ftHintResult->first << " | it->second = " << ftHintResult->second << std::endl;
+
+    std::map<char, int> stdForInsert1;
+    ft::map<char, int> ftForInsert1;
+    char c = 'z';
+    for (int i = 10; i < 15; i++){
+        stdForInsert1.insert(std::make_pair(c, i));
+        ftForInsert1.insert(ft::make_pair(c, i));
+        c--;
+    }
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(47) << "insert (range)" << std::setw(33) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(49) << "map to be inserted" << std::setw(31) << "|" << std::endl;
+    PrintMap(stdForInsert1, ftForInsert1, fout);
+    stdMapInsert.insert(stdForInsert1.begin(), stdForInsert1.end());
+    ftMapInsert.insert(ftForInsert1.begin(), ftForInsert1.end());
+    fout << "|" << std::setw(46) << "after insert" << std::setw(34) << "|" << std::endl;
+    PrintMap(stdMapInsert, ftMapInsert, fout);
+
+    std::map<char, int> stdForInsert2;
+    ft::map<char, int> ftForInsert2;
+    fout << "|" << std::setw(46) << "empty insert" << std::setw(34) << "|" << std::endl;
+    stdMapInsert.insert(stdForInsert2.begin(), stdForInsert2.end());
+    ftMapInsert.insert(ftForInsert2.begin(), ftForInsert2.end());
+    PrintMap(stdMapInsert, ftMapInsert, fout);
+
+    std::map<char, int> stdForInsert3;
+    ft::map<char, int> ftForInsert3;
+    c = 'a';
+    for (int i = -100; i < -97; i++){
+        c--;
+        stdForInsert3.insert(std::make_pair(c, i));
+        ftForInsert3.insert(ft::make_pair(c, i));
+    }
+    fout << "|" << std::setw(46) << "after insert" << std::setw(34) << "|" << std::endl;
+    stdMapInsert.insert(stdForInsert3.begin(), stdForInsert3.end());
+    ftMapInsert.insert(ftForInsert3.begin(), ftForInsert3.end());
+    PrintMap(stdMapInsert, ftMapInsert, fout);
+
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    fout << "|" << std::setw(47) << "erase (iter)" << std::setw(33) << "|" << std::endl;
+    fout << "--------------------------------------------------------------------------------" << std::endl;
+    stdMapInsert.erase(stdMapInsert.find('a'));
+    ftMapInsert.erase(ftMapInsert.find('a'));
+    PrintMap(stdMapInsert, ftMapInsert, fout);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -85,6 +420,28 @@ void MapTest(void){
 
     fout << "--------------------------------------------------------------------------------" << std::endl;
 }
+
+/*
+ ** Map Test End
+ */
+
+/*****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************/
 
 /*
  ** Stack Test Start
@@ -400,6 +757,24 @@ void StackTest(void){
 ** Stack Test End
 */
 
+/*****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************
+ *****************************************************************************************************************/
+
 /*
 ** Vector Test Start 
 */
@@ -480,7 +855,7 @@ void VectorTest(void){
     ftVecCopy.push_back(7);
     fout << "|" << std::setw(38) << "Origin" << std::setw(42) << "|" << std::endl;
     PrintVector(stdVecRange, ftVecRange, fout);
-    fout << "|" << std::setw(39) << "after =" << std::setw(41) << "|" << std::endl;
+    fout << "|" << std::setw(40) << "deep copy" << std::setw(40) << "|" << std::endl;
     PrintVector(stdVecCopy, ftVecCopy, fout);
 
     std::vector<int> stdVecOper;
@@ -495,7 +870,7 @@ void VectorTest(void){
     ftVecOper.push_back(9);
     fout << "|" << std::setw(38) << "Origin" << std::setw(42) << "|" << std::endl;
     PrintVector(stdVecCopy, ftVecCopy, fout);
-    fout << "|" << std::setw(39) << "after =" << std::setw(41) << "|" << std::endl;
+    fout << "|" << std::setw(40) << "deep copy" << std::setw(40) << "|" << std::endl;
     PrintVector(stdVecOper, ftVecOper, fout);
 
 
@@ -1064,9 +1439,9 @@ void VectorTest(void){
 */
 
 int main(void){
-    VectorTest();
-    StackTest();
+    // VectorTest();
+    // StackTest();
     MapTest();
-    // system("leaks a.out");
+    system("leaks a.out");
     return (0);
 }
