@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/22 17:50:01 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/23 16:55:12 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,8 +239,12 @@ namespace ft {
                     }
                     /* case sibling의 자식이 모두 BLACK */
                     if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
+                        int colorTemp = node->_parent->_color;
                         sibling->_color = RED;
                         node->_parent->_color = BLACK;
+                        if (colorTemp == RED){
+                            break ;
+                        }
                         node = node->_parent;
                     }
                     else{
@@ -269,14 +273,18 @@ namespace ft {
                     }
                     /* case 2-A */
                     if (sibling->_left->_color == BLACK && sibling->_right->_color == BLACK){
+                        int colorTemp = node->_parent->_color;
                         sibling->_color = RED;
                         node->_parent->_color = BLACK;
+                        if (colorTemp == RED){
+                            break ;
+                        }
                         node = node->_parent;
                     }
                     else{
                         /* case 2-B */
-                        if (sibling->_right->_color == BLACK){
-                            sibling->_left->_color = BLACK;
+                        if (sibling->_left->_color == BLACK){
+                            sibling->_right->_color = BLACK;
                             sibling->_color = RED;
                             this->rotate_left(sibling);
                             sibling = this->findSibling(node);
@@ -284,7 +292,7 @@ namespace ft {
                         /* case 2-C */
                         sibling->_color = node->_parent->_color;
                         node->_parent->_color = BLACK;
-                        sibling->_right->_color = BLACK;
+                        sibling->_left->_color = BLACK;
                         this->rotate_right(node->_parent);
                         break ;
                     }
@@ -336,12 +344,25 @@ namespace ft {
             if (target == NULL){
                 return NULL;
             }
-
             if (isLastElement(target)){
                 removeNode = target;
             }
             else {
                 removeNode = this->findMaxInLeft(target);
+                if (removeNode == NULL){
+                    removeNode = target;
+                    removeNode->_right->_parent = removeNode->_parent;
+                    if (removeNode->_color == BLACK){
+                        removeNode->_right->_color = BLACK;
+                    }
+                    if (removeNode == removeNode->_parent->_left){
+                        removeNode->_parent->_left = removeNode->_right;
+                    }
+                    else{
+                        removeNode->_parent->_right = removeNode->_right;
+                    }
+                    return removeNode;
+                }
                 target = this->swapTargetRemoveNode(target, removeNode);
             }
             doubleBlack = removeNode->_left;
