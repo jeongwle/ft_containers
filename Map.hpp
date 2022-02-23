@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 09:26:38 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/21 16:32:06 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/23 15:09:45 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ namespace ft {
             while(first != last){
                 temp = first;
                 first++;
-                this->erase(*temp);
+                this->erase(temp);
             }
         }
 
