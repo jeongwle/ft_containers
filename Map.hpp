@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 09:26:38 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/23 15:09:45 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/24 14:55:26 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,23 @@ namespace ft {
                 return comp(x.first, y.first);
             }
         };
-        typedef Alloc                                                   allocator_type;
-        typedef typename allocator_type::reference                      reference;
-        typedef typename allocator_type::const_reference                const_reference;
-        typedef typename allocator_type::pointer                        pointer;
-        typedef typename allocator_type::const_pointer                  const_pointer;
-        typedef ft::treeIterator<value_type, value_compare, false>      iterator;
-        typedef ft::treeIterator<value_type, value_compare, true>       const_iterator;
-        typedef ft::reverse_iterator<iterator>                          reverse_iterator;
-        typedef ft::reverse_iterator<const_iterator>                    const_reverse_iterator;
-        typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
-        typedef size_t                                                  size_type;
+        typedef Alloc                                                               allocator_type;
+        typedef typename allocator_type::reference                                  reference;
+        typedef typename allocator_type::const_reference                            const_reference;
+        typedef typename allocator_type::pointer                                    pointer;
+        typedef typename allocator_type::const_pointer                              const_pointer;
+        typedef ft::treeIterator<value_type, value_compare, false>                  iterator;
+        typedef ft::treeIterator<value_type, value_compare, true>                   const_iterator;
+        typedef ft::reverse_iterator<iterator>                                      reverse_iterator;
+        typedef ft::reverse_iterator<const_iterator>                                const_reverse_iterator;
+        typedef typename ft::iterator_traits<iterator>::difference_type             difference_type;
+        typedef size_t                                                              size_type;
 
     /* 현재 여기 아래 구현한 거 한개도 없음 그냥 틀 잡아놓은 것 */
     private :
         typedef typename Alloc::template rebind<ft::tree<value_type, value_compare, Alloc> >::other   tree_alloc;
-        typedef typename ft::tree<value_type, value_compare, Alloc>*        tree_pointer;
-        typedef typename ft::tree<value_type, value_compare, Alloc>::Node*  node_pointer;
+        typedef typename ft::tree<value_type, value_compare, Alloc>*                tree_pointer;
+        typedef typename ft::tree<value_type, value_compare, Alloc>::node_pointer   node_pointer;
         /* private variables */
         size_type       _size;
         key_compare     _comp;
@@ -255,14 +255,16 @@ namespace ft {
             if (this->_tree->lowerThanFirst(ft::make_pair(k, mapped_type()))){
                 return iterator(this->_tree->findFirstNode(), this->_tree);
             }
-            return this->find(k);
+            node_pointer node = this->_tree->firstBetweenLast(ft::make_pair(k, mapped_type()));
+            return iterator(node, this->_tree);
         }
 
         const_iterator lower_bound(const key_type& k) const{
             if (this->_tree->lowerThanFirst(ft::make_pair(k, mapped_type()))){
                 return const_iterator(this->_tree->findFirstNode(), this->_tree);
             }
-            return this->find(k);
+            node_pointer node = this->_tree->firstBetweenLast(ft::make_pair(k, mapped_type()));
+            return const_iterator(node, this->_tree);
         }
 
         iterator upper_bound(const key_type& k){
@@ -276,7 +278,8 @@ namespace ft {
                     return iterator(next, this->_tree);
                 }
             }
-            return iterator(this->_tree->getNilNode(), this->_tree);
+            node_pointer node = this->_tree->firstBetweenLast(ft::make_pair(k, mapped_type()));
+            return iterator(node, this->_tree);
         }
 
         const_iterator upper_bound(const key_type& k) const{
@@ -341,7 +344,7 @@ namespace ft {
     }
 
     template <class Key, class T, class Compare, class Alloc>
-    void swap(const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs){
+    void swap(ft::map<Key, T, Compare, Alloc>& lhs, ft::map<Key, T, Compare, Alloc>& rhs){
         lhs.swap(rhs);
     }
 }
