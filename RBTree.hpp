@@ -6,7 +6,7 @@
 /*   By: jeongwle <jeongwle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 12:31:40 by jeongwle          #+#    #+#             */
-/*   Updated: 2022/02/23 16:55:12 by jeongwle         ###   ########.fr       */
+/*   Updated: 2022/02/24 14:56:55 by jeongwle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -640,6 +640,28 @@ namespace ft {
             return false;
         }
 
+        node_pointer firstBetweenLast(const value_type& val){
+            if (this->findNode(val)){
+                return this->findNode(val);
+            }
+            node_pointer curr = this->_root;
+            if (this->_compare(val, curr->_value)){
+                while (this->_compare(val, curr->_value)){
+                    curr = this->findPrevNode(curr);
+                }
+                return this->findNextNode(curr);
+            }
+            else{
+                while (!(this->_compare(val, curr->_value))){
+                    curr = this->findNextNode(curr);
+                    if (curr == NULL){
+                        return this->_NIL;
+                    }
+                }
+                return curr;
+            }
+        }
+
         node_pointer getNilNode(void) const{
             return this->_NIL;
         }
@@ -693,8 +715,8 @@ namespace ft {
         typedef typename ft::tree<value_type, value_compare>                        tree_type;
         typedef tree_type*                                                          tree_pointer;
         typedef typename ft::tree<value_type, value_compare>::Node                  node_type;
-        typedef typename ft::isConst<node_type*, const node_type*, Const>::type     node_pointer;
-        typedef typename ft::isConst<node_type&, const node_type&, Const>::type     node_reference;
+        typedef node_type*                                                          node_pointer;
+        typedef node_type&                                                          node_reference;
 
     private :
         /* variables */
